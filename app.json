@@ -1,0 +1,8 @@
+{
+    "name": "Destiny Bounty Optimizer",
+    "description": "The node.js application for Destiny Bounty Optimizer",
+    "repository": "https://github.com/WaterMalone97/destiny-bounty-optimizer",
+    "logo": "https://logodix.com/logo/577792.jpg",
+    "keywords": ["node", "express", "static"],
+    "image": "heroku/node.js"
+}
