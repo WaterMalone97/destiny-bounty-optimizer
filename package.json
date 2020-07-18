@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cd server && npm install && node index.js",
+    "start": "node index.js",
     "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "repository": {
@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/WaterMalone97/destiny-bounty-optimizer/issues"
   },
-  "homepage": "https://github.com/WaterMalone97/destiny-bounty-optimizer#readme"
+  "homepage": "https://github.com/WaterMalone97/destiny-bounty-optimizer#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.4",
+    "path": "^0.12.7",
+    "request": "^2.88.2"
+  }
 }
