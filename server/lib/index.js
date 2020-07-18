@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const ServiceContext = require('./ServiceContext');
+var path = require('path');
 
 app.use(express.json());
 app.set('port', (process.env.PORT || 8080));
