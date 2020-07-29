@@ -10,14 +10,14 @@ router.get('/login', (req, res) => {
      res.redirect('https://www.bungie.net/en/oauth/authorize' + querystring.stringify({
             client_id: process.env.client_id,
             response_type: 'code',
-            state: process.env.state
+            state: process.env.REACT_APP_STATE
     }));
 });
 
 router.get('/callback', async (req, res) => {
     let code = req.query.code;
     let state = req.query.state;
-    if (state !== process.env.state) {
+    if (state !== process.env.REACT_APP_STATE) {
         console.log('Recieved callback from D2 API with unknown state. Ignoring...');
     }
     else {
@@ -27,7 +27,7 @@ router.get('/callback', async (req, res) => {
             body: {
                 grant_type: 'authorization_code',
                 code,
-                client_id: process.env.client_id,
+                client_id: process.env.REACT_APP_CLIENT_ID,
             }
         }
 

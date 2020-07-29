@@ -1,32 +1,27 @@
 import React from 'react';
 import './index.css';
+import { Switch, Route } from 'react-router';
+import Info from './pages/Info';
+import Home from './pages/Home';
+import querystring from 'querystring'
 
 class App extends React.Component {
-
-  // fetch api example
-  /* componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/todos/1')
-      .then(res => res.json())
-      .then(json => console.log(json))
-  } */
 
   render() {
 
     return (
       <div>
-        <div className="main"></div>
-        <div className="main-title">
-          <h1>Destiny Bounty Optimizer</h1>
-        </div>
-
-        <div className="main-content">
-          <h3>Welcome to the Destiny Bounty Optimizer</h3>
-          <h5>This application will help you find the most efficent bounties to complete to get the most experience in shortest amount of time in Destiny 2.
-              Destiny Bounty Optimizer is a node.js web application that will utilize Bungie's API to gather bounties from all the vendors where it will interpret the data and display 
-              the optimized route that the player should take. Players will be able to filter any type of bounties that they wish to complete or ignore.
-              Whether we wanted it or not, we've stepped into a war with the Cabal on Mars. Destiny Bounty Optimzer is here to help!
-          </h5>
-        </div>
+        <Switch>
+          <Route path='/info' component={Info}/>
+          <Route path='/dev/login' render={() => 
+            window.location.replace('https://www.bungie.net/en/oauth/authorize?' + querystring.stringify({
+              client_id: process.env.REACT_APP_CLIENT_ID,
+              response_type: 'code',
+              state: process.env.REACT_APP_STATE
+            }))}/>
+          <Route exact path='/' component={Home}/>
+          <Route path='/' render={() => <h1>404: page not found</h1>}/>
+        </Switch>
       </div>
     )
   }
