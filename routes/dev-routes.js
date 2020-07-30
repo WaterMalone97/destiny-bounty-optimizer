@@ -5,15 +5,6 @@ const router = express.Router();
 const querystring = require('querystring');
 const request = require('request');
 
-router.get('/login', (req, res) => {
-    console.log('Received Login Request');
-     res.redirect('https://www.bungie.net/en/oauth/authorize' + querystring.stringify({
-            client_id: process.env.client_id,
-            response_type: 'code',
-            state: process.env.REACT_APP_STATE
-    }));
-});
-
 router.get('/callback', async (req, res) => {
     let code = req.query.code;
     let state = req.query.state;
