@@ -42,4 +42,11 @@ router.get('/callback', async (req, res) => {
     }
 });
 
+router.get('/test', (req, res) => {
+    let response = {
+        text: "HI THIS IS A TEST"
+    };
+    res.json(response);
+});
+
 module.exports = router;

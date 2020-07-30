@@ -1,35 +1,25 @@
-require('dotenv').config();
-const request = require('request');
 const express = require('express');
-const app = express();
 const path = require('path');
 const ServiceContext = require('./ServiceContext');
+const app = express();
 
-app.use(express.json());
-app.set('port', (process.env.PORT || 5000));
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'client/build')));
+
 let serviceContext = new ServiceContext();
 
-const guardianRouter = require('./routes/guardian-routes');
-const passThroughRouter = require('./routes/passthrough-routes');
 const devRouter = require ('./routes/dev-routes');
-
-app.use('/guardian', function(req, res, next) {
-    req.ctx = serviceContext;
-    next();
- }, guardianRouter);
 
  app.use('/dev', function(req, res, next) {
    req.ctx = serviceContext;
    next();
 }, devRouter);
 
- app.use('/passthrough', function(req, res, next) {
-    req.ctx = serviceContext;
-    next();
- }, passThroughRouter);
+app.get('*', (req, res) => {
+   res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});
 
- app.get('/callback', (req, res) => {
-   
- });
-
-app.listen(app.get('port'), () => console.log('Listening on port', app.get('port')));
+ const port = process.env.PORT || 5000;
+ app.listen(port);
+ 
+ console.log('App is listening on port ' + port);
