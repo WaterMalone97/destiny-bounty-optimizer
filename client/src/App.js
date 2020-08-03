@@ -20,6 +20,7 @@ class App extends React.Component {
               state: process.env.REACT_APP_STATE
             }))}/>
           <Route path='/test' component={Test}/>
+          <Route path='/dev' component={Home}/>
           <Route exact path='/' component={Home}/>
           <Route path='/' render={() => <h1>404: page not found</h1>}/>
         </Switch>
