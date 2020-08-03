@@ -48,9 +48,12 @@ router.get('/callback', async (req, res) => {
                     })
                     newToken.save();
                     console.log('Added token to db')
-                    res.json(res.data);
+                    resolve(res.data);
                 })
-                .catch(err => console.log('ERROR REQUESTING TOKEN:', err.response))
+                .catch(err => {
+                    console.log('ERROR REQUESTING TOKEN:', err.response)
+                    reject(err.response)
+                })
             });
             console.log(tokenResponse);
         }
