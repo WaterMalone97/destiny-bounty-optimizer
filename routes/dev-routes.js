@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const querystring = require('querystring');
-const request = require('request');
 const axios = require('axios');
 const Token = require('../models/token');
 
@@ -28,16 +27,6 @@ router.get('/callback', async (req, res) => {
 
         try {
             let tokenResponse = await new Promise((resolve, reject) => {
-               /*  request.post(tokenRequest, (error, response, body) => {
-                    console.log(response)
-                    if (!error) {
-                        resolve(body);
-                    }
-                    else {
-                        console.log('ERROR REQUESTING TOKEN:', error);
-                        reject(response);
-                    }
-                }); */
                 axios(tokenRequest)
                 .then(res => {
                     const newToken = new Token({
@@ -48,7 +37,7 @@ router.get('/callback', async (req, res) => {
                     })
                     newToken.save();
                     console.log('Added token to db')
-                    resolve(res.data);
+                    resolve(res.data);                    
                 })
                 .catch(err => {
                     console.log('ERROR REQUESTING TOKEN:', err.response)
@@ -60,6 +49,7 @@ router.get('/callback', async (req, res) => {
         catch (error) {
             console.log(error);
         }
+        res.redirect('https://destiny-bounty-optimizer.herokuapp.com')
     }
 });
 
