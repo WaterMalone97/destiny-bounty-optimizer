@@ -9,15 +9,12 @@ class Test extends React.Component {
 
   // Fetch the list on first mount
   componentDidMount() {
-    this.callAPI();
-  }
-
-  // Retrieves the list of items from the Express app
-  callAPI = () => {
     fetch('/dev/test')
     .then(res => res.json())
     .then(text => this.setState(text))
   }
+
+  // Retrieves the list of items from the Express app
 
   render() {
     const text = this.state;
@@ -25,11 +22,10 @@ class Test extends React.Component {
       <div className="App">
         <h1>List of Items</h1>
           <div>
-              <h2>{text}</h2>
+              <h2>{this.state.text}</h2>
           </div>
-        )
       </div>
-    );
+    )
   }
 }
 

@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Commander Zavala",
+        "vendorHash": "69482069",
+        "image": "",
+        "group": "Tower",
+        "location": "Tower",
+        "sales": [
+            {
+                "itemNumber": "",
+                "itemHash": "",
+                "itemName": "",
+                "objective": "",
+                "cost": "",
+                "rewards" : "",
+                "weight": ""
+            }
+        ]
+    }
+]

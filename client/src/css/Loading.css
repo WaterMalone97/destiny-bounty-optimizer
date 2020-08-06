@@ -1,0 +1,128 @@
+.loadingContainer {
+    width: 510px;
+    height: auto;
+    display: flex;
+    flex-flow: row wrap;
+    opacity: 0.8;
+    font-family: sans-serif;
+    margin-left: 37.5vw;
+    margin-top: 25vh;
+}
+
+.loadingHeader {
+    background-color: rgb(53, 53, 54);
+    width: 510px;
+    height: 92px;
+    padding-left: 16px;
+}
+
+.loadingBody {
+    background-color: rgba(21, 28, 35, 26);
+    width: 510px;
+    height: auto;
+    padding-left: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(80, 85, 90, 80);
+}
+
+.emptyBox {
+    background-color: rgb(11, 14, 18);
+    height: 26px;
+    width: 26px;
+    border: 2px solid rgb(143, 147, 150)
+}
+
+.filledBox {
+    height: 26px;
+    width: 26px;
+    border: 2px solid rgb(89, 94, 99)
+}
+
+.fill {
+    background-color: rgb(80, 119, 91);
+    border: 3px solid rgba(21, 28, 35, 26);
+    height: 20px;
+    width: 20px;
+}
+
+.objectiveBox {
+    background-color: rgb(11, 14, 18);
+    height: 30px;
+    width: 438px;
+}
+
+.bar1 {
+    background-color: rgba(144, 238, 144, 0.9);
+    height: 30px;
+    width: 0px;    
+}
+
+.bar2 {
+    background-color: rgba(144, 238, 144, 0.9);
+    height: 30px;
+    width: 300px;    
+}
+
+.bar3 {
+    background-color: rgba(144, 238, 144, 0.9);
+    height: 30px;
+    width: 100px;    
+}
+
+.objectiveContainer { 
+    display: grid;
+    grid-template-columns: 30px auto;
+    grid-gap: 6px;
+    padding-bottom: 6px;
+}
+
+.loadingFooter {
+    background-color: rgba(21, 28, 35, 26);   
+    width: 510px;
+    height: auto;
+    align-self: flex-end;
+    padding-left: 18px;
+}
+
+.loadingActions {
+    background-color: rgb(16, 20, 25);
+    width: 510px;
+    height: 39px;
+    align-self: flex-end;
+    display: grid;
+    grid-template-columns: 50px 100px;
+    text-align: right;
+    padding-left: 350px;
+    padding-bottom: 8px;
+}
+
+.loadingContainer h1 {
+    font-size: 25px;
+    color: white;
+    opacity: 1;
+}
+
+.loadingContainer h2 {
+    font-size: 18px;
+    margin-top: -25px;
+    color: white;
+    font-weight: normal;
+    padding-left: 7px;
+    position: absolute;
+    opacity: 1;
+}
+
+.loadingContainer h3 {
+    font-size: 16px;
+    font-weight: normal;
+    color: lightgray;
+    opacity: 1;
+}
+
+.loadingHeader h3 {
+    margin-top: -5px;
+}
+
+.loadingBody h3, .loadingFooter h3 {
+    width: 474px;
+}

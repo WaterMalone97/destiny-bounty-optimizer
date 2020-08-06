@@ -1,9 +1,11 @@
 import React from 'react';
-import './index.css';
+import './css/Index.css';
 import { Switch, Route } from 'react-router';
 import Info from './pages/Info';
 import Home from './pages/Home';
-import Test from './pages/Test'
+import Bounties from './pages/Bounties';
+import Test from './pages/Test';
+import Loading from './pages/Loading';
 import querystring from 'querystring'
 
 class App extends React.Component {
@@ -20,7 +22,9 @@ class App extends React.Component {
               state: process.env.REACT_APP_STATE
             }))}/>
           <Route path='/test' component={Test}/>
+          <Route path='/bounties' component={Bounties}/>
           <Route exact path='/' component={Home}/>
+          <Route path='/loading' component={Loading}/>
           <Route path='/' render={() => <h1>404: page not found</h1>}/>
         </Switch>
       </div>

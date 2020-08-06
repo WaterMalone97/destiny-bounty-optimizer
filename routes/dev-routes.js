@@ -35,7 +35,7 @@ router.get('/callback', async (req, res) => {
                         refresh_token: res.data.refresh_token,
                         refresh_token_expire: res.data.refresh_expires_in
                     })
-                    await newToken.save();
+                    newToken.save();
                     console.log('Added token to db')
                     resolve(res.data);                    
                 })
