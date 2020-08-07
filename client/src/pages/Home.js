@@ -1,5 +1,4 @@
 import React from 'react';
-import vendors from '../DestinyVendorDefinition.json'
 
 class Home extends React.Component {
 
@@ -22,9 +21,6 @@ class Home extends React.Component {
   }
 
   render() {
-    
-    let filter = vendors['69482069'].itemList.filter(elem => elem.displayCategory === 'Bounties')
-    console.log(filter)
 
     let display = this.state.bounties.map(elem => 
       <div key={elem.vendorHash}>

@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
                 Object.keys(response.data.Response.sales.data[key].saleItems).map(item => {
                    saleItems.push({
                         id: item,
-                        data: response.data.Response.sales.data[key].saleItems[item]
+                        ...response.data.Response.sales.data[key].saleItems[item]
                     });
                 });
                 vendorSales.push({
@@ -39,6 +39,7 @@ router.get('/', async (req, res) => {
                 });
             });
             this._ctx.bountyHelper.getVendorNames(vendorSales);
+            this._ctx.bountyHelper.getBountyInfo(vendorSales);
             res.json(vendorSales);
             break;
         }
