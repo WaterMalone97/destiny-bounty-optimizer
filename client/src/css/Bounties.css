@@ -1,0 +1,69 @@
+.vendorContainer {
+    display: flex;
+    flex-flow: row wrap;
+    background-color: rgba(58, 60, 64, 0.5);
+    border-radius: 5px;
+    margin: 10px 10px 30px 10px;
+    padding: 0px 20px 20px 20px
+}
+
+.vendorInfo {
+    flex: 0 1 100%;
+}
+
+.vendorInfo img {
+    border: 1px rgba(255, 255, 255, 0.7) solid;
+    width: auto;
+    height: auto;
+}
+
+.salesContainer {
+    display: flex;
+    flex-flow: row wrap;
+    flex: 0 1 100%;
+}
+
+.bounties {
+    flex: 0 1 100%;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.itemContainer {
+    flex: 0 1 auto;
+    display: grid;
+    grid-template-columns: 100px 200px;
+    column-gap: 5px;
+    padding: 6px
+}
+
+.bountiesContainer h1 {
+    font-size: 48px
+}
+
+.bountiesContainer .main-title {
+    height: 50px;
+}
+
+.bountiesContainer .main-content {
+    margin-bottom: 100px;
+}
+
+@media (max-width: 800px) {
+    .vendorInfo img {
+        width: 420px;
+        height: 120px;
+    }
+}
+
+@media (max-width: 600px) {
+    .vendorInfo img {
+        width: 262px;
+        height: 75px;
+    }
+
+    .itemContainer img {
+        width: 72px;
+        height: 72px;
+    }
+}
