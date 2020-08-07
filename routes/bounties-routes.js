@@ -17,13 +17,29 @@ router.get('/', async (req, res) => {
                     'Authorization': 'Bearer ' + token
                 },
                 params: {
-                    // Specifies the type of data bungie should give
+                    // Specifies the type of data bungie should give, in this case, 402 specifies vendor sales
                     components: 402
                 }
             }
             let response = await axios(bountyRequest);
-            console.log('Grabbed bounties')
-            res.json(response.data.Response.sales)
+            console.log('Grabbed bounties');
+            //let vendorSales = Object.entries(response.data.Response.sales.data).map((sale) => ( { [sale[0]]: sale[1] } ));
+            let vendorSales = [];
+            Object.keys(response.data.Response.sales.data).map(key => {
+                let saleItems = [];
+                Object.keys(response.data.Response.sales.data[key].saleItems).map(item => {
+                   saleItems.push({
+                        id: item,
+                        data: response.data.Response.sales.data[key].saleItems[item]
+                    });
+                });
+                vendorSales.push({
+                    id: key,
+                    saleItems
+                });
+            });
+            this._ctx.bountyHelper.getVendorNames(vendorSales);
+            res.json(vendorSales);
             break;
         }
         catch(err) {

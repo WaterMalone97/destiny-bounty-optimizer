@@ -22,6 +22,7 @@ class App extends React.Component {
               state: process.env.REACT_APP_STATE
             }))}/>
           <Route path='/test' component={Test}/>
+          <Route path='/dev' component={Home}/>
           <Route path='/bounties' component={Bounties}/>
           <Route exact path='/' component={Home}/>
           <Route path='/loading' component={Loading}/>
