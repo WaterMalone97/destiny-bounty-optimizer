@@ -1,4 +1,4 @@
-const TokenHelper = require('./tokenHelper');
+const TokenHelper = require('./helpers/TokenHelper');
 const BountyHelper = require('./helpers/BountyHelper');
 
 class ServiceContext {

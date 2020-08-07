@@ -1,4 +1,4 @@
-let manifest = require('../client/src/DestinyVendorDefinition.json')
+let vendorDefinitionManifest = require('../manifests/DestinyVendorDefinition.json')
 
 class BountyHelper {
     constructor(ctx) {
@@ -11,7 +11,7 @@ class BountyHelper {
      */
     getVendorNames(vendors) {
         for (let vendor of vendors) {
-            vendor.name = manifest[vendor.id].displayProperties.name;
+            vendor.name = vendorDefinitionManifest[vendor.id].displayProperties.name;
         }
     }
 }
