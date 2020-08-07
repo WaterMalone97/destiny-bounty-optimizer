@@ -12,6 +12,7 @@ class Home extends React.Component {
       .then(res => res.json())
       .then(json => {
         console.log(json.data)
+        console.log(Object.entries(json.data));
         Object.entries(json.data).map(elem => this.setState({ 
             bounties: [...this.state.bounties, {vendorHash: elem[0], sales: Object.keys(elem[1].saleItems)}] 
           })

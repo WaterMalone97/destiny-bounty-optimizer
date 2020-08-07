@@ -18,3 +18,26 @@
         ]
     }
 ]
+
+
+[
+    {
+        "name": "Commander Zavala",
+        "vendorHash": "69482069",
+        "image": "",
+        "group": "Tower",
+        "location": "Tower",
+        "bounties": [
+            {
+                "Description": "Get 10 percision auto kills",
+                "weaponType": "Auto rilfes",
+                "element type": "arc, void, solar",
+                "locations": "strikes",
+                "rewards": 5000,
+                "cost": 500,
+                "time": 2,
+                "weight": 0
+            }
+        ]
+    }
+]
