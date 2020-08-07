@@ -51,6 +51,20 @@ router.get('/', async (req, res) => {
             }
         }
     }
+
+    router.get('/rank', (req, res) => {
+        this._ctx = req.ctx;
+        let bounty = this._ctx.bountyHelper.getUnevaluatedBounty();
+        res.json(bounty);
+    });
+
+    router.post('/rank', async (req, res) => {
+        this._ctx = req.ctx;
+        let time = req.body.time;
+        let id = req.body.id;
+        await this._ctx.bountyHelper.addBountyEvaluation(id, time);
+        res.status(200).end();
+    });
 })
 
 module.exports = router;

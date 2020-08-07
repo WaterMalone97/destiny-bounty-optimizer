@@ -3,11 +3,15 @@ const path = require('path');
 const ServiceContext = require('./ServiceContext');
 const app = express();
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
 
 require('dotenv').config();
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
 
 const db = process.env.mongoURI
 

@@ -1,10 +1,39 @@
 const vendorDefinitionManifest = require('../manifests/DestinyVendorDefinition.json');
 const inventoryItemDefinitionManifest = require('../manifests/DestinyInventoryItemDefinition.json');
 const objectiveDefinitionManifest = require('../manifests/DestinyObjectiveDefinition.json');
+const Bounty = require('../models/Bounty');
 
 class BountyHelper {
     constructor(ctx) {
         this._ctx = ctx;
+        this._bounties = new Map();
+        Object.keys(inventoryItemDefinitionManifest).filter(item => {
+            let manifestItem = inventoryItemDefinitionManifest[item];
+            if (manifestItem.itemTypeAndTierDisplayName && manifestItem.itemTypeAndTierDisplayName.includes('Bounty') && !manifestItem.itemTypeAndTierDisplayName.includes('Weekly Bounty')) {
+                let objectiveIds = Object.keys(manifestItem.objectives.objectiveHashes).map(id => {
+                    return manifestItem.objectives.objectiveHashes[id];
+                });
+                let completionValue = objectiveDefinitionManifest[objectiveIds[0]].completionValue
+
+                this._bounties.set(item, {
+                    id: item,
+                    itemTypeDisplayName: manifestItem.itemTypeDisplayName,
+                    description: manifestItem.displayProperties.description,
+                    completionValue,
+                    icon: `https://bungie.net${manifestItem.displayProperties.icon}`
+                });
+            }
+            else {
+                return false;
+            }
+        });
+        Bounty.find({id: {$in : Array.from(this._bounties.keys())}})
+        .then(currentlyRanked => {
+            for (let rank of currentlyRanked) {
+                let bounty = this._bounties.get(rank.id)
+                bounty.time = rank.time;
+            }
+        });
     }
 
     /**
@@ -14,7 +43,7 @@ class BountyHelper {
     getVendorNames(vendors) {
         for (let vendor of vendors) {
             vendor.name = vendorDefinitionManifest[vendor.id].displayProperties.name;
-            vendor.icon = `bungie.net${vendorDefinitionManifest[vendor.id].displayProperties.largeIcon}`;
+            vendor.icon = `https://bungie.net${vendorDefinitionManifest[vendor.id].displayProperties.largeIcon}`;
         }
     }
 
@@ -38,7 +67,7 @@ class BountyHelper {
                     });
                     item.description = manifestItem.displayProperties.description;
                     item.name = manifestItem.displayProperties.name;
-                    item.icon = `bungie.net${manifestItem.displayProperties.icon}`;
+                    item.icon = `https://bungie.net${manifestItem.displayProperties.icon}`;
                     item.objectives = objectives;
                 }
                 else {
@@ -55,6 +84,23 @@ class BountyHelper {
         }
         for (let vendor of vendorsToDelete) {
             vendors.splice(vendors.indexOf(vendor), 1);
+        }
+    }
+
+    getUnevaluatedBounty() {
+        for (let bounty of Array.from(this._bounties.values())) {
+            if (!bounty.time) {
+                return bounty;
+            }
+        }
+    }
+
+    async addBountyEvaluation(id, time) {
+        let bounty = this._bounties.get(id);
+        if (bounty) {
+            bounty.time = time;
+            let b = new Bounty({id, time});
+            await b.save();
         }
     }
 }
