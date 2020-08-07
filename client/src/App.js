@@ -4,7 +4,6 @@ import { Switch, Route } from 'react-router';
 import Info from './pages/Info';
 import Home from './pages/Home';
 import Bounties from './pages/Bounties';
-import Test from './pages/Test';
 import Loading from './pages/Loading';
 import Rank from './pages/Rank';
 import querystring from 'querystring'
@@ -22,7 +21,6 @@ class App extends React.Component {
               response_type: 'code',
               state: process.env.REACT_APP_STATE
             }))}/>
-          <Route path='/test' component={Test}/>
           <Route path='/dev' component={Home}/>
           <Route path='/bounties' component={Bounties}/>
           <Route exact path='/' component={Home}/>

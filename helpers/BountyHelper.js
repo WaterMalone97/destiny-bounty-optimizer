@@ -1,3 +1,4 @@
+const axios = require('axios');
 const vendorDefinitionManifest = require('../manifests/DestinyVendorDefinition.json');
 const inventoryItemDefinitionManifest = require('../manifests/DestinyInventoryItemDefinition.json');
 const objectiveDefinitionManifest = require('../manifests/DestinyObjectiveDefinition.json');
@@ -20,7 +21,8 @@ class BountyHelper {
                     itemTypeDisplayName: manifestItem.itemTypeDisplayName,
                     description: manifestItem.displayProperties.description,
                     completionValue,
-                    icon: `https://bungie.net${manifestItem.displayProperties.icon}`
+                    icon: `https://bungie.net${manifestItem.displayProperties.icon}`,
+                    progressDescription: objectiveDefinitionManifest[objectiveIds[0]].progressDescription
                 });
             }
             else {
@@ -47,6 +49,10 @@ class BountyHelper {
         }
     }
 
+    /**
+     * Get the required information about bounties that the passed in vendors are selling
+     * @param {Object[]} vendors An array of vendors
+     */
     getBountyInfo(vendors) {
         let vendorsToDelete = [];
         for (let vendor of vendors) {
@@ -87,17 +93,88 @@ class BountyHelper {
         }
     }
 
+    /**
+     * Makes a call to the destiny API to get vendor sales
+     * @return {Object[]} An array of formatted bounty objects
+     */
+    async getBounties() {
+        let response;
+        try {
+            let token = await this._ctx.tokenHelper.grabToken();
+            let bountyRequest = {
+                url: `https://www.bungie.net/Platform/Destiny2/${process.env.mem_type}/Profile/${process.env.member_id}/Character/${process.env.char_id}/Vendors/`,
+                method: 'GET',
+                headers: {
+                    'X-API-Key': process.env.apiKey, 
+                    'Authorization': 'Bearer ' + token
+                },
+                params: {
+                    // Specifies the type of data bungie should give, in this case, 402 specifies vendor sales
+                    components: 402
+                }
+            }
+            response = await axios(bountyRequest);
+        }
+        catch (err) {
+            if (err.response.status == 401) {
+                console.log('Token expired, refreshing token')
+                await this._ctx.tokenHelper.refreshToken();
+                await getBounties();
+            }
+            else {
+                throw new Error('Unable to get bounties', err.response.status);
+            }
+        }
+        console.log('Grabbed bounties');
+        //let vendorSales = Object.entries(response.data.Response.sales.data).map((sale) => ( { [sale[0]]: sale[1] } ));
+        let vendorSales = [];
+        Object.keys(response.data.Response.sales.data).map(key => {
+            let saleItems = [];
+            Object.keys(response.data.Response.sales.data[key].saleItems).map(item => {
+                saleItems.push({
+                    id: item,
+                    ...response.data.Response.sales.data[key].saleItems[item]
+                });
+            });
+            vendorSales.push({
+                id: key,
+                saleItems
+            });
+        });
+        this._ctx.bountyHelper.getVendorNames(vendorSales);
+        this._ctx.bountyHelper.getBountyInfo(vendorSales);
+        return vendorSales;
+    }
+
+    /**
+     * Find a bounty that doesn't have a time set
+     * @returns {Object} A bounty object
+     */
     getUnevaluatedBounty() {
         for (let bounty of Array.from(this._bounties.values())) {
-            if (!bounty.time) {
+            if (!bounty.time && !bounty.timeSelected) {
+                bounty.timeSelected = Date.now();
                 return bounty;
+            }
+            else if (!bounty.time && bounty.timeSelected) {
+                let currentTime = Date.now();
+                if (currentTime > bounty.timeSelected + 30000) {
+                    bounty.timeSelected = Date.now();
+                    return bounty;
+                }
             }
         }
     }
 
+    /**
+     * Insert the time value into the DB for the specified bounty
+     * @param {String} id The id of the bounty
+     * @param {String} time The time value
+     */
     async addBountyEvaluation(id, time) {
         let bounty = this._bounties.get(id);
-        if (bounty) {
+        let result = await Bounty.find( {id} );
+        if (!result || result.length === 0 && bounty) {
             bounty.time = time;
             let b = new Bounty({id, time});
             await b.save();
