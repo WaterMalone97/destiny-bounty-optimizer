@@ -1,4 +1,4 @@
-const Token = require('./models/token');
+const Token = require('../models/token');
 const axios = require('axios');
 const querystring = require('querystring');
 
