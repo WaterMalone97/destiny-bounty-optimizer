@@ -1,22 +1,30 @@
 import React from 'react';
-import '../css/Bounties.css'
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { isLoading, doneLoading } from '../actions/loadingActions';
+import Loading from './Loading';
+import '../css/Bounties.css';
 
-class Home extends React.Component {
+class Bounties extends React.Component {
 
   state = {
     vendors: []
   }
 
   async componentDidMount() {
+    this.props.isLoading()
     await fetch('/bounties')
       .then(res => res.json())
       .then(json => {
          this.setState({ vendors: json })
       })
+    //this.setState({ loading: false})
+    this.props.doneLoading()
   }
 
   render() {
-    console.log(this.state.vendors)
+    //console.log(this.state.vendors)
+    //console.log(this.props.load)
 
     let display = this.state.vendors.map(elem => 
       <div key={elem.id} className='vendorContainer'>
@@ -56,15 +64,28 @@ class Home extends React.Component {
 
     return (
       <div className='bountiesContainer'>
-        <div className="main"></div>
-        <div className="main-title"></div>
-        <div className="main-content">
-          <h1>Today's Bounties</h1>
-          {display}
-        </div>
+        {this.props.load.loadPage ? 
+        <div> 
+          <div className="main"></div>
+          <div className="main-title"></div>
+          <div className="main-content">
+            <h1>Today's Bounties</h1>
+            {display}
+          </div>
+        </div> : <Loading /> }
       </div>
     )
   }
 } 
 
-export default Home;
+Bounties.protoTypes = {
+  load: PropTypes.object.isRequired,
+  isLoading: PropTypes.func.isRequired,
+  doneLoading: PropTypes.func.isRequired
+}
+
+const mapStateToProps = state => ({
+  load: state
+})
+
+export default connect(mapStateToProps, { isLoading, doneLoading })(Bounties);

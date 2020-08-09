@@ -1,7 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { loadPage } from '../actions/loadingActions';
 import '../css/Loading.css';
 
-class Info extends React.Component {
+class Loading extends React.Component {
 
     state = {
         width: 0,
@@ -16,26 +19,32 @@ class Info extends React.Component {
     }
 
     componentWillUnmount() {
+        console.log('Unmounting')
         clearInterval(this.load);  
     }
 
     progress() {
-        if (this.state.width == 438) {
+        if (!this.props.load.loading) {
             clearInterval(this.load);
-            return this.setState({ width: 0, done: true })
+            console.log('done loading')
+            this.setState({ width: 438 })
+            setTimeout(() => this.props.loadPage(), 2000);  
         }
-            
-        this.setState({ width: this.state.width + 1 })
-    }
 
-    clear() {
-        this.setState({ width: 0 })
+        if (this.state.width === 438) {
+            setTimeout(() => this.setState({ width: 0, done: true }), 1000)    
+        } 
+        else
+            this.setState({ width: this.state.width + 1 })
     }
 
     render() {
 
-        console.log(this.state.width)
-        let progressBar = {width: String(this.state.width) + 'px'}
+        let progressBar = {
+            width: String(this.state.width) + 'px',
+            backgroundColor: 'rgba(144, 238, 144, 0.9)',
+            height: '30px'
+        }
 
         let box = this.state.done ? 
             <div className='filledBox'>
@@ -86,4 +95,13 @@ class Info extends React.Component {
   }
 } 
 
-export default Info;
+Loading.protoTypes = {
+    load: PropTypes.object.isRequired,
+    loadPage: PropTypes.func.isRequired
+}
+  
+const mapStateToProps = state => ({
+    load: state
+})
+  
+export default connect(mapStateToProps, { loadPage })(Loading);
