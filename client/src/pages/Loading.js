@@ -2,16 +2,55 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loadPage } from '../actions/loadingActions';
+import loadscreen from '../loadscreen.json'
 import '../css/Loading.css';
 
 class Loading extends React.Component {
 
     state = {
-        width: 0,
-        done: false
+        content: {
+            title: 'OPTIMIZE',
+            subTitle: 'Destiny Bounty Optimizer',
+            desc: 'Wait for the application to grab bounties, optimize the bounties, and create instructions.',
+            objectives: [
+                {
+                    name:'Grabbing bounties',
+                    progressBar: {
+                        width: 0,
+                        backgroundColor: 'rgba(144, 238, 144, 0.9)',
+                        height: '30px'
+                    },
+                    interval: 3,
+                    done: false
+                },
+                {
+                    name:'Optimzing routes',
+                    progressBar: {
+                        width: 0,
+                        backgroundColor: 'rgba(144, 238, 144, 0.9)',
+                        height: '30px'
+                    },
+                    interval: 2,
+                    done: false
+                },
+                {
+                    name:'Generating instructions',
+                    progressBar: {
+                        width: 0,
+                        backgroundColor: 'rgba(144, 238, 144, 0.9)',
+                        height: '30px'
+                    },
+                    interval: 1,
+                    done: false        
+                }
+            ],
+            footer: '"Work smarter not harder, let Destiny Bounty Optimzer help you."',
+            author: 'DBO Team'
+        }
     }
 
     componentDidMount() {
+        this.setState({ content: loadscreen[Math.round(Math.random() * (loadscreen.length - 1))] })
         this.load = setInterval(
             () => this.progress(),
             10
@@ -20,70 +59,102 @@ class Loading extends React.Component {
 
     componentWillUnmount() {
         console.log('Unmounting')
-        clearInterval(this.load);  
+        clearInterval(this.load);
     }
 
     progress() {
-        if (!this.props.load.loading) {
-            clearInterval(this.load);
-            console.log('done loading')
-            this.setState({ width: 438 })
-            setTimeout(() => this.props.loadPage(), 2000);  
-        }
+        this.setState(prevState => ({
+            content: {
+                ...prevState.content,
+                objectives: prevState.content.objectives.map(elem => {
+                    if (elem.progressBar.width === 438)
+                        return {
+                            ...elem,
+                            progressBar: {
+                                ...elem.progressBar,
+                                width: 0
+                            },
+                            interval: 0,
+                            done: true
+                        }
 
-        if (this.state.width === 438) {
-            setTimeout(() => this.setState({ width: 0, done: true }), 1000)    
-        } 
-        else
-            this.setState({ width: this.state.width + 1 })
+                    return {
+                        ...elem,
+                        progressBar: {
+                            ...elem.progressBar,
+                            width: elem.progressBar.width + elem.interval
+                        }
+                    }
+                })                                         
+            }
+        }))
+
+        if (!this.props.load.loading) {
+            clearInterval(this.load)
+            console.log('done loading')
+            this.setState(prevState => ({
+                content: {
+                    ...prevState.content,
+                    objectives: prevState.content.objectives.map(elem => {
+                        if (!elem.done)
+                            return {
+                                ...elem,
+                                progressBar: {
+                                    ...elem.progressBar,
+                                    width: 438
+                                }               
+                            }
+                        return elem
+                    })
+                }
+            }))
+            setTimeout(() => this.setState(prevState => ({
+                content: {
+                    ...prevState.content,
+                    objectives: prevState.content.objectives.map(elem => {
+                        return {
+                            ...elem,
+                            progressBar: {
+                                ...elem.progressBar,
+                                width: 0
+                            },
+                            interval: 0,
+                            done: true
+                        }
+                    })
+                }
+            }))
+            , 100)
+            setTimeout(() => this.props.loadPage(), 1000)
+        }
     }
 
     render() {
-
-        let progressBar = {
-            width: String(this.state.width) + 'px',
-            backgroundColor: 'rgba(144, 238, 144, 0.9)',
-            height: '30px'
-        }
-
-        let box = this.state.done ? 
-            <div className='filledBox'>
-                <div className='fill'></div>
-            </div> : <div className='emptyBox'></div>
-
+        let objectives = this.state.content.objectives.map(elem =>
+            <div className='objectiveContainer' key={elem.name}>                   
+                {elem.done ? 
+                <div className='filledBox'>
+                    <div className='fill'></div>
+                </div> : <div className='emptyBox'></div>}
+                <div className='objectiveBox'>
+                    <div style={elem.progressBar}></div>
+                    <h2>{elem.name}</h2>
+                </div>
+            </div>
+        )
 
         return (
             <div className='loadingContainer'>
                 <div className='loadingHeader'>
-                    <h1>OPTIMIZE</h1>
-                    <h3>Destiny Bounty Optimizer</h3>
+                    <h1>{this.state.content.title}</h1>
+                    <h3>{this.state.content.subTitle}</h3>
                 </div>
                 <div className='loadingBody'>
-                    <h3><i>Wait for the application to grab bounties, optimize the bounties, and create instructions.</i></h3>
-                    <div className='objectiveContainer'>                   
-                        {box}
-                        <div className='objectiveBox'>
-                            <div className='bar1' style={progressBar}></div>
-                            <h2>Grabbing bounties</h2>
-                        </div>
-                    </div>
-                    <div className='objectiveContainer'>
-                        <div className='emptyBox'></div>
-                        <div className='objectiveBox'>
-                            <div className='bar2'></div>
-                            <h2>Optimizing route</h2>                       
-                        </div>
-                    </div>
-                    <div className='objectiveContainer'>
-                        <div className='emptyBox'></div>
-                        <div className='objectiveBox'>
-                            <div className='bar3'></div>
-                            <h2>Writing instructions</h2>
-                        </div>
-                    </div>
+                    <h3>{this.state.content.desc}</h3>
+                    {objectives}
                 </div>
                 <div className='loadingFooter'>
-                    <h3><i>"Work smarter not harder, let Destiny Bounty Optimzer help you." &mdash; DBO Team</i></h3>
+                    <h3>{this.state.content.footer} &mdash; {this.state.content.author}</h3>
                 </div> 
 
                 <div className='loadingActions'>

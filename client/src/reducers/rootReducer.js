@@ -1,6 +1,6 @@
 const defaultState = {
     loading: null,
-    loadPage: null
+    loadPage: null,
   }
   
 const rootReducer = (state = defaultState, action) => {

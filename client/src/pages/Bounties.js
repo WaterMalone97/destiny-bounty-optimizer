@@ -8,7 +8,10 @@ import '../css/Bounties.css';
 class Bounties extends React.Component {
 
   state = {
-    vendors: []
+    vendors: [],
+    toggle: false,
+    top: '',
+    left: ''
   }
 
   async componentDidMount() {
@@ -18,8 +21,22 @@ class Bounties extends React.Component {
       .then(json => {
          this.setState({ vendors: json })
       })
-    //this.setState({ loading: false})
+    //give each bounty a toggle
     this.props.doneLoading()
+  }
+
+  toggle = (event) => {
+    console.log(event)
+    this.setState({ toggle: true })
+    window.addEventListener('mousemove', (event) => {
+      console.log(event.x, event.y)
+      //left event.x
+      this.setState({ top: '50%', left: event.x})
+    })
+  } 
+
+  hide = () => {
+    this.setState({ toggle: false })
   }
 
   render() {
@@ -40,7 +57,7 @@ class Bounties extends React.Component {
               {elem.saleItems.filter(elem => elem.bountyType.includes('Weekly')).map(elem => 
                 <div key={elem.itemHash} className='itemContainer'> 
                   <img src={elem.icon} alt={elem.name} />
-                  <h4>{elem.name}</h4>
+                  <h4 onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.hide}>{elem.name}</h4>
                 </div>                    
               )}
             </div> 
@@ -62,12 +79,23 @@ class Bounties extends React.Component {
       </div>
     )
 
+    let style = {
+      top: this.state.top,
+      left: this.state.left,
+      height: "100px",
+      width: "100px",
+      position: 'fixed',
+      backgroundColor: 'magenta',
+      zIndex: 4
+    }
+
     return (
       <div className='bountiesContainer'>
         {this.props.load.loadPage ? 
         <div> 
           <div className="main"></div>
           <div className="main-title"></div>
+          {this.state.toggle ? <div style={style}>asdfs</div> : null}
           <div className="main-content">
             <h1>Today's Bounties</h1>
             {display}
