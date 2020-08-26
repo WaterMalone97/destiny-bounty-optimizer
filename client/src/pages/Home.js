@@ -46,6 +46,7 @@ class Home extends React.Component {
 
   handleClick = (event) => {
     console.log(event)
+    let body = JSON.stringify({ type: event.name })
     this.setState(prevState => ({ 
       filters: prevState.filters.map((elem, index) => {
         if (index === event.index)
@@ -53,6 +54,13 @@ class Home extends React.Component {
         return elem
       })
     }))
+    fetch('/filter', {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json'
+      },
+      body
+    })
   }
 
   render() {
@@ -82,7 +90,7 @@ class Home extends React.Component {
     return (
       <div>
         {this.props.load.loadPage ?
-        <div>
+        <div className='home'> 
           <div className="main"></div>
           <div className="main-title">
             <h1>Destiny Bounty Optimizer</h1>
@@ -94,9 +102,11 @@ class Home extends React.Component {
               {filters}
             </div>
             <h2>Bounties</h2>
-            <div className='bounty-container'>
-              
+            <div className='bounty-container'>          
               {display}
+              <div>
+                <a href='/bounties'><h5>See all bounties</h5></a>
+              </div>
             </div>
             <div className='instructions-container'>
               <h2>Instructions</h2>
@@ -106,6 +116,12 @@ class Home extends React.Component {
               <h2>Rewards</h2>
 
             </div>
+          </div>
+          <div className='footer'>
+            <a href='/'>Home</a>
+            <a href='/bounties'>Bounties</a>
+            <a href='/info'>Landing</a>
+            <a href='/support'>Support</a>
           </div>
         </div>: <Loading /> }
       </div>

@@ -21,7 +21,7 @@ class Bounties extends React.Component {
       .then(json => {
          this.setState({ vendors: json })
       })
-    //give each bounty a toggle
+    console.log(this.state.vendors)
     this.props.doneLoading()
   }
 
@@ -29,10 +29,13 @@ class Bounties extends React.Component {
     console.log(event)
     this.setState({ toggle: true })
     window.addEventListener('mousemove', (event) => {
-      console.log(event.x, event.y)
+      //console.log(event.x, event.y)
       //left event.x
       this.setState({ top: '50%', left: event.x})
     })
+    for (let item of this.state.vendors) {
+      
+    }
   } 
 
   hide = () => {
@@ -56,8 +59,9 @@ class Bounties extends React.Component {
             <div className='bounties'>
               {elem.saleItems.filter(elem => elem.bountyType.includes('Weekly')).map(elem => 
                 <div key={elem.itemHash} className='itemContainer'> 
-                  <img src={elem.icon} alt={elem.name} />
-                  <h4 onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.hide}>{elem.name}</h4>
+                  <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.hide}/>
+                  <h4>{elem.name}</h4>
+                  {elem.toggle ? <div>Show info</div> : null}
                 </div>                    
               )}
             </div> 
@@ -90,13 +94,14 @@ class Bounties extends React.Component {
     }
 
     return (
-      <div className='bountiesContainer'>
+      <div>
         {this.props.load.loadPage ? 
-        <div> 
+        <div className='bountiesContainer'> 
           <div className="main"></div>
           <div className="main-title"></div>
           {this.state.toggle ? <div style={style}>asdfs</div> : null}
           <div className="main-content">
+            <a href='/home'><h5>Back to optimizer</h5></a>
             <h1>Today's Bounties</h1>
             {display}
           </div>

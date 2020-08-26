@@ -1,3 +1,7 @@
+.home .main-content {
+    margin-bottom: 50px;
+}
+
 .filter-container, .bounty-container, .instructions-container {
     border-bottom: 2px solid white;
 }
@@ -5,6 +9,10 @@
 .filter-option {
     display: flex;
     height: 60px;
+}
+
+.filter-option .filledBox:hover, .filter-option .emptyBox:hover {
+    cursor: pointer;
 }
 
 .filter-option h4 {
@@ -32,4 +40,13 @@
 .item img {
     height: 50px;
     width: 50px;
+}
+
+.footer {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    margin: auto;
+    width: 80vw;
+    margin-bottom: 50px;
 }
