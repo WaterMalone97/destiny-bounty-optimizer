@@ -23,6 +23,10 @@
     flex: 0 1 100%;
 }
 
+.salesContainer h3 {
+    text-decoration: underline;
+}
+
 .bounties {
     flex: 0 1 100%;
     display: flex;
@@ -37,6 +41,16 @@
     padding: 6px
 }
 
+.showBounty {
+    top: 50vh;
+    left: 50vw;
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    background-color: magenta;
+    z-index: 4;
+}
+
 .bountiesContainer h1 {
     font-size: 48px
 }
@@ -47,6 +61,10 @@
 
 .bountiesContainer .main-content {
     margin-bottom: 100px;
+}
+
+.loadingBody h3, .loadingFooter h3 {
+    font-style: italic;
 }
 
 @media (max-width: 800px) {

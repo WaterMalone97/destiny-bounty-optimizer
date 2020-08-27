@@ -1,0 +1,61 @@
+[
+    {
+        "title": "OPTIMIZE",
+        "subTitle": "Destiny Bounty Optimizer",
+        "desc": "Wait for the application to grab bounties, optimize the bounties, and create instructions.",
+        "objectives": [
+            {
+                "name": "Grabbing bounties",
+                "progressBar": {
+                    "width": 0,
+                    "backgroundColor": "rgba(144, 238, 144, 0.9)",
+                    "height": "30px"
+                },
+                "interval": 3,
+                "done": false
+            },
+            {
+                "name": "Optimzing routes",
+                "progressBar": {
+                    "width": 0,
+                    "backgroundColor": "rgba(144, 238, 144, 0.9)",
+                    "height": "30px"
+                },
+                "interval": 2,
+                "done": false
+            },
+            {
+                "name": "Generating instructions",
+                "progressBar": {
+                    "width": 0,
+                    "backgroundColor": "rgba(144, 238, 144, 0.9)",
+                    "height": "30px"
+                },
+                "interval": 1,
+                "done": false        
+            }
+        ],
+        "footer": "\"Work smarter not harder, let Destiny Bounty Optimzer help you.\"",
+        "author": "DBO Team"
+    },
+
+    {
+        "title": "LOAD",
+        "subTitle": "Destiny Bounty Optimizer",
+        "desc": "Just sit there and wait for the page to load",
+        "objectives": [
+            {
+                "name": "Loading content",
+                "progressBar": {
+                    "width": 0,
+                    "backgroundColor": "rgba(144, 238, 144, 0.9)",
+                    "height": "30px"
+                },
+                "interval": 1,
+                "done": false
+            }       
+        ],
+        "footer": "\"Let's play the waiting game.\"",
+        "author": "DBO Team"
+    }
+]

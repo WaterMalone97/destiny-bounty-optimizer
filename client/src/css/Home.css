@@ -1,0 +1,35 @@
+.filter-container, .bounty-container, .instructions-container {
+    border-bottom: 2px solid white;
+}
+
+.filter-option {
+    display: flex;
+    height: 60px;
+}
+
+.filter-option h4 {
+    margin-top: 4px;
+    padding-left: 10px;
+}
+
+.bounty-container {
+    flex: 0 1 auto;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.vendors{
+    flex: 0 1 auto;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.item {
+    flex: 0 1 auto;
+    padding: 5px
+}
+
+.item img {
+    height: 50px;
+    width: 50px;
+}
