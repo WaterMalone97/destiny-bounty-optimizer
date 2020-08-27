@@ -4,7 +4,6 @@ import { Switch, Route } from 'react-router';
 import Info from './pages/Info';
 import Home from './pages/Home';
 import Bounties from './pages/Bounties';
-import Loading from './pages/Loading';
 import Rank from './pages/Rank';
 import Support from './pages/Support';
 import querystring from 'querystring'
@@ -25,7 +24,6 @@ class App extends React.Component {
             }))}/>
           <Route path='/dev' component={Home}/>
           <Route path='/bounties' component={Bounties}/>
-          <Route path='/loading' component={Loading}/>
           <Route path='/support' component={Support}/>
           <Route path='/rank' component={Rank}/>
           <Route path='/' render={() => <h1>404: page not found</h1>}/>

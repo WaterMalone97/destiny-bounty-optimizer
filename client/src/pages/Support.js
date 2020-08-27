@@ -1,4 +1,5 @@
 import React from 'react';
+import Navbar from '../components/Navbar'
 import '../css/Support.css'
 
 class Support extends React.Component {
@@ -38,6 +39,7 @@ class Support extends React.Component {
 
         return (
             <div className='support-page'>
+                <Navbar /> 
                 <div className="main"></div>
                 <div className="main-title"></div>                             
                 <div className="main-content">

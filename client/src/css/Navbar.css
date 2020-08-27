@@ -1,0 +1,19 @@
+.navbar {
+    z-index: 3;
+    position: fixed;
+    background-color: rgba(40, 41, 40, 0.8);
+    width: 100vw;
+    height: 50px;
+    display: flex
+}
+
+.navbar a {
+    padding: 12px 20px 0px 20px;
+    color: white;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: goldenrod;
+    background-color: rgba(17, 43, 82, 0.8);
+}
