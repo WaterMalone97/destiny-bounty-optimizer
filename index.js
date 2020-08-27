@@ -24,6 +24,7 @@ let serviceContext = new ServiceContext();
 const devRouter = require ('./routes/dev-routes');
 const tokenRouter = require ('./routes/token-routes');
 const bountiesRouter = require ('./routes/bounties-routes');
+const supportRouter = require ('./routes/support-routes');
 
 app.use('/dev', function(req, res, next) {
   req.ctx = serviceContext;
@@ -40,6 +41,10 @@ app.use('/bounties', function(req, res, next) {
   next();
 }, bountiesRouter);
 
+app.use('/support', function(req, res, next) {
+  req.ctx = serviceContext;
+  next();
+}, supportRouter);
 
 app.get('*', (req, res) => {
    res.sendFile(path.join(__dirname+'/client/build/index.html'));

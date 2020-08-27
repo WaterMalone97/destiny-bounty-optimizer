@@ -66,7 +66,20 @@ class Loading extends React.Component {
         this.setState(prevState => ({
             content: {
                 ...prevState.content,
-                objectives: prevState.content.objectives.map(elem => {
+                objectives: prevState.content.objectives.map((elem, index )=> {
+                    if (index === prevState.content.objectives.length - 1) {
+                        if (elem.progressBar.width >= 420 && this.props.load.loading) {
+                            return {
+                                ...elem,
+                                progressBar: {
+                                    ...elem.progressBar,
+                                    width: 420
+                                },
+                                interval: 0
+                            }
+                        }
+                    }
+                    
                     if (elem.progressBar.width === 438)
                         return {
                             ...elem,

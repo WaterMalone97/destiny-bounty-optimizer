@@ -31,4 +31,10 @@ router.post('/rank', async (req, res) => {
     res.status(200).end();
 });
 
+router.post('/filter', async (req, res) => {
+    console.log('Filter out', req.body.type);
+    this._ctx = req.ctx;
+    res.status(200).end();
+});
+
 module.exports = router;

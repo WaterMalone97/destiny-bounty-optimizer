@@ -133,7 +133,9 @@ class BountyHelper {
             Object.keys(response.data.Response.sales.data[key].saleItems).map(item => {
                 saleItems.push({
                     id: item,
-                    ...response.data.Response.sales.data[key].saleItems[item]
+                    ...response.data.Response.sales.data[key].saleItems[item],
+                    toggle: false,
+                    show: false
                 });
             });
             vendorSales.push({

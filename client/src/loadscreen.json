@@ -57,5 +57,45 @@
         ],
         "footer": "\"Let's play the waiting game.\"",
         "author": "DBO Team"
+    },
+     
+    {
+        "title": "THE BLUEBERRY METHOD",
+        "subTitle": "Destiny 101",
+        "desc": "How to be a proper blueberry",
+        "objectives": [
+            {
+                "name": "Non heroic public events",
+                "progressBar": {
+                    "width": 0,
+                    "backgroundColor": "rgba(74, 96, 140, 0.9)",
+                    "height": "30px"
+                },
+                "interval": 2,
+                "done": false
+            },
+            {
+                "name": "Don't do the objectives",
+                "progressBar": {
+                    "width": 0,
+                    "backgroundColor": "rgba(74, 96, 140, 0.9)",
+                    "height": "30px"
+                },
+                "interval": 3,
+                "done": false
+            },
+            {
+                "name": "Recieve strongly worded messages",
+                "progressBar": {
+                    "width": 0,
+                    "backgroundColor": "rgba(74, 96, 140, 0.9)",
+                    "height": "30px"
+                },
+                "interval": 1,
+                "done": false
+            }        
+        ],
+        "footer": "\"I'm tired of these damn blueberries in my damn public events!\"",
+        "author": "DBO Team"
     }
 ]
