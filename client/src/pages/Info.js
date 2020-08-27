@@ -1,4 +1,5 @@
 import React from 'react';
+import Navbar from '../components/Navbar'
 
 class Info extends React.Component {
 
@@ -13,6 +14,7 @@ class Info extends React.Component {
 
     return (
       <div>
+        <Navbar /> 
         <div className="main"></div>
         <div className="main-title">
           <h1>Destiny Bounty Optimizer</h1>

@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isLoading, doneLoading } from '../actions/loadingActions';
-import Loading from './Loading';
+import Loading from '../components/Loading';
+import Navbar from '../components/Navbar'
 import '../css/Bounties.css';
 
 class Bounties extends React.Component {
@@ -11,7 +12,8 @@ class Bounties extends React.Component {
     vendors: [],
     toggle: false,
     top: '',
-    left: ''
+    left: '',
+    bounties: new Map()
   }
 
   async componentDidMount() {
@@ -22,6 +24,13 @@ class Bounties extends React.Component {
          this.setState({ vendors: json })
       })
     console.log(this.state.vendors)
+    let bountyLib = new Map()
+    for (let vendor of this.state.vendors) 
+      for (let item of vendor.saleItems) {
+          bountyLib.set(item.itemHash, vendor.id)
+      }
+    this.setState({ bounties: bountyLib })
+    console.log(this.state.bounties)
     this.props.doneLoading()
   }
 
@@ -33,9 +42,9 @@ class Bounties extends React.Component {
       //left event.x
       this.setState({ top: '50%', left: event.x})
     })
-    for (let item of this.state.vendors) {
-      
-    }
+    const vendorIndex = this.state.vendors.map(elem => elem.id).indexOf(this.state.bounties.get(event.itemHash))
+    console.log(vendorIndex)
+    //this.setState({ [vendors[index].saleItems]: })
   } 
 
   hide = () => {
@@ -96,12 +105,12 @@ class Bounties extends React.Component {
     return (
       <div>
         {this.props.load.loadPage ? 
-        <div className='bountiesContainer'> 
+        <div className='bountiesContainer'>
+          <Navbar />  
           <div className="main"></div>
           <div className="main-title"></div>
           {this.state.toggle ? <div style={style}>asdfs</div> : null}
           <div className="main-content">
-            <a href='/home'><h5>Back to optimizer</h5></a>
             <h1>Today's Bounties</h1>
             {display}
           </div>

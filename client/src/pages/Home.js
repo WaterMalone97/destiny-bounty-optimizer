@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isLoading, doneLoading } from '../actions/loadingActions';
-import Loading from './Loading';
+import Loading from '../components/Loading';
+import Navbar from '../components/Navbar'
 import '../css/Home.css';
 
 class Home extends React.Component {
@@ -90,7 +91,8 @@ class Home extends React.Component {
     return (
       <div>
         {this.props.load.loadPage ?
-        <div className='home'> 
+        <div className='home'>
+          <Navbar /> 
           <div className="main"></div>
           <div className="main-title">
             <h1>Destiny Bounty Optimizer</h1>
@@ -104,9 +106,6 @@ class Home extends React.Component {
             <h2>Bounties</h2>
             <div className='bounty-container'>          
               {display}
-              <div>
-                <a href='/bounties'><h5>See all bounties</h5></a>
-              </div>
             </div>
             <div className='instructions-container'>
               <h2>Instructions</h2>

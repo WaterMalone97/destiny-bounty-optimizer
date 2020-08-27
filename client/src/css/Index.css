@@ -31,9 +31,8 @@ body {
   z-index: 2;
   text-align: center;
   width: 100vw;
-  height: 200px;
-  padding: 10px;
-  margin-bottom: 20px;
+  padding-top: 100px;
+  margin-bottom: 150px;
 }
 
 .main-content {
