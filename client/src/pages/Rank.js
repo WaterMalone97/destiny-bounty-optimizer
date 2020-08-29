@@ -13,7 +13,7 @@ class Rank extends React.Component {
     };
 
     async componentDidMount() {
-        await fetch('/bounties/rank')
+        await fetch('api/bounties/rank')
         .then(res => res.json())
         .then(json => {
             this.setState({description: json.description});

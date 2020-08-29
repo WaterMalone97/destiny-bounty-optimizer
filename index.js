@@ -36,7 +36,7 @@ app.use('/token', function(req, res, next) {
   next();
 }, tokenRouter);
 
-app.use('/bounties', function(req, res, next) {
+app.use('/api/bounties', function(req, res, next) {
   req.ctx = serviceContext;
   next();
 }, bountiesRouter);

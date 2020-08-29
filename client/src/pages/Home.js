@@ -36,7 +36,7 @@ class Home extends React.Component {
 
   async componentDidMount() {
     this.props.isLoading()
-    await fetch('/bounties')
+    await fetch('/api/bounties')
       .then(res => res.json())
       .then(json => {
          this.setState({ vendors: json })
