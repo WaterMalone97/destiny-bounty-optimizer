@@ -26,9 +26,9 @@ class Bounties extends React.Component {
     console.log(this.state.vendors)
     let bountyLib = new Map()
     for (let vendor of this.state.vendors) 
-      for (let item of vendor.saleItems) {
-          bountyLib.set(item.itemHash, vendor.id)
-      }
+      for (let i = 0; i < vendor.saleItems.length; i++)
+        bountyLib.set(vendor.saleItems[i].itemHash, {vendorId: vendor.id, index: i})
+    
     this.setState({ bounties: bountyLib })
     console.log(this.state.bounties)
     this.props.doneLoading()
@@ -36,16 +36,13 @@ class Bounties extends React.Component {
 
   toggle = (event) => {
     console.log(event)
-    this.setState({ toggle: true })
-    window.addEventListener('mousemove', (event) => {
-      //console.log(event.x, event.y)
-      //left event.x
-      this.setState({ top: '50%', left: event.x})
-    })
-    const vendorIndex = this.state.vendors.map(elem => elem.id).indexOf(this.state.bounties.get(event.itemHash))
-    console.log(vendorIndex)
-    //this.setState({ [vendors[index].saleItems]: })
-  } 
+    let arr = [...this.state.vendors]
+    const vendorIndex = this.state.vendors.map(elem => elem.id).indexOf(this.state.bounties.get(event.itemHash).vendorId)
+    const bountyIndex = this.state.bounties.get(event.itemHash).index
+    //console.log(vendorIndex, bountyIndex)
+    arr[vendorIndex].saleItems[bountyIndex].toggle = !arr[vendorIndex].saleItems[bountyIndex].toggle
+    this.setState({ vendors: [...arr] })
+  }
 
   hide = () => {
     this.setState({ toggle: false })
@@ -68,9 +65,22 @@ class Bounties extends React.Component {
             <div className='bounties'>
               {elem.saleItems.filter(elem => elem.bountyType.includes('Weekly')).map(elem => 
                 <div key={elem.itemHash} className='itemContainer'> 
-                  <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.hide}/>
+                  <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
                   <h4>{elem.name}</h4>
-                  {elem.toggle ? <div>Show info</div> : null}
+                  {elem.toggle ? 
+                  <div className='tooltip'>
+                    <h4>{elem.name.toUpperCase()}</h4>
+                    <h5>{elem.description}</h5>
+                    {elem.objectives.map(elem => 
+                      <div className='container' key={elem.id}>                   
+                        <div className='box'></div>
+                        <div className='objective'>
+                            <h5 className='description'>{elem.progressDescription}</h5>
+                            <h5 className='value'>{elem.completionValue}</h5>
+                        </div>
+                      </div>
+                    )}
+                  </div> : null}
                 </div>                    
               )}
             </div> 
