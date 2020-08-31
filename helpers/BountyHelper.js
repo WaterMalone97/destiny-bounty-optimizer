@@ -389,25 +389,25 @@ class BountyHelper {
             let constraints = bounty.constraints;
             let score = 0;
             if (constraints.weaponType.length > 0) {
-                score += (15 * (constraints.weaponType.length / weaponTypes.length));
+                score += (15 * ((weaponTypes.length - constraints.weaponType.length) / weaponTypes.length));
             }
             else {
                 score += 15;
             }
             if (constraints.location.length > 0) {
-                score += (25 * (constraints.location.length / locations.length));
+                score += (25 * ((weaponTypes.length - constraints.location.length) / locations.length));
             }
             else {
                 score += 25;
             }
             if (constraints.ammoType.length > 0) {
-                score += (15 * (constraints.ammoType.length / ammoTypes.length));
+                score += (15 * ((ammoTypes.length - constraints.ammoType.length) / ammoTypes.length));
             }
             else {
                 score += 15;
             }
             if (constraints.element.length > 0) {
-                score += (15 * (constraints.element.length / elementTypes.length));
+                score += (15 * ((elementTypes.length - constraints.element.length) / elementTypes.length));
             }
             else {
                 score += 15;
@@ -474,8 +474,13 @@ class BountyHelper {
             switch (bounty.vendorName) {
                 case(towerVendors.ZAVALA):
                     // Zavala
-                    bounty.constraints.location.push('Strikes');
-                    locationSpecificBounties.push(bounty);
+                    if (bounty.description.toUpperCase().includes('STRIKE') || bounty.description.toUpperCase().includes('NIGHTFALL')) {
+                        bounty.constraints.location.push('Strikes');
+                        locationSpecificBounties.push(bounty);
+                    }
+                    else {
+                        bounty.constraints.excludedLocation = ['Crucible'];
+                    }
                     break;
                 case(towerVendors.DRIFTER):
                     // Drifter
@@ -547,7 +552,6 @@ class BountyHelper {
             // Check for enemy type
             for (let term of excludedLocationTerms) {
                 if (bounty.description.toUpperCase().includes(term.toUpperCase())) {
-                    console.log('klafsdjkfaskfadfasdfasl;df;')
                     bounty.constraints.excludedLocation = ['Crucible', 'Gambit', 'Gambit Prime'];
                     switch(term) {
                         case enemyTypes.CABAL:
@@ -566,6 +570,8 @@ class BountyHelper {
                         case 'sector':
                             bounty.constraints.excludedLocation.push('Strikes');
                             break;
+                        case enemyTypes.VEX:
+                            bounty.constraints.excludedLocation.push(...['EDZ', 'Moon']);
                     }
                 }
             }
