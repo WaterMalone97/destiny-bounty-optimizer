@@ -116,12 +116,6 @@ class Home extends React.Component {
 
             </div>
           </div>
-          <div className='footer'>
-            <a href='/'>Home</a>
-            <a href='/bounties'>Bounties</a>
-            <a href='/info'>Landing</a>
-            <a href='/support'>Support</a>
-          </div>
         </div>: <Loading /> }
       </div>
     )
