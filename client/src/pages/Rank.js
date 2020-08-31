@@ -31,7 +31,7 @@ class Rank extends React.Component {
         time: event.target.value,
         id
       });
-      await fetch('bounties/rank', {
+      await fetch('/api/bounties/rank', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ class Rank extends React.Component {
         },
         body
       });
-      await fetch('/bounties/rank')
+      await fetch('/api/bounties/rank')
         .then(res => res.json())
         .then(json => {
             this.setState({description: json.description});

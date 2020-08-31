@@ -36,13 +36,13 @@ class Home extends React.Component {
 
   async componentDidMount() {
     this.props.isLoading()
-    await fetch('/api/bounties')
+    await fetch('api/bounties/optimize?score=60')
       .then(res => res.json())
       .then(json => {
-         this.setState({ vendors: json })
+          this.setState({ bounties: json })
       })
     this.props.doneLoading()
-    console.log(this.state.vendors)
+    console.log(this.state.bounties)
   }
 
   handleClick = (event) => {

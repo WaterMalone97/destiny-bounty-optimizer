@@ -31,10 +31,11 @@ router.post('/rank', async (req, res) => {
     res.status(200).end();
 });
 
-router.post('/filter', async (req, res) => {
-    console.log('Filter out', req.body.type);
+router.get('/optimize', async (req, res) => {
     this._ctx = req.ctx;
-    res.status(200).end();
+    let minScore = parseInt(req.query.score);
+    let bountyArray = await this._ctx.bountyHelper.optimize(JSON.parse(JSON.stringify(vendorSales)), minScore);
+    res.json(bountyArray);
 });
 
 module.exports = router;
