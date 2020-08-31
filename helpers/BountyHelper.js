@@ -16,8 +16,7 @@ const towerVendors = {
     SLOANE: 'Sloane',
     DEVRIM: 'Devrim Kay',
     SPIDER: 'Spider',
-    ADA: 'Ada-1'
-
+    //ADA: 'Ada-1'
 };
 const enemyTypes = {
     CABAL: 'Cabal',
@@ -559,11 +558,14 @@ class BountyHelper {
                             break;
                         case enemyTypes.HIVE:
                             bounty.constraints.excludedLocation.push(...['EDZ'])
+                            break;
                         case enemyTypes.SCORN:
                             bounty.constraints.excludedLocation.push(...['EDZ', 'Moon', 'Nessus', 'IO', 'Titan', 'Mercury',
-                        'Mars', 'Moon'])
+                        'Mars', 'Moon']);
+                            break;
                         case 'sector':
-                            bounty.constraints.excludedLocation.push('Strikes')
+                            bounty.constraints.excludedLocation.push('Strikes');
+                            break;
                     }
                 }
             }

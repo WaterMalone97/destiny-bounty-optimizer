@@ -9,7 +9,7 @@ import '../css/Home.css';
 class Home extends React.Component {
 
   state = {
-    vendors: [],
+    bounties: [],
     filters: [
       {
         name: 'Crucible',
@@ -78,13 +78,25 @@ class Home extends React.Component {
       </div>
     )
 
-    let display = this.state.vendors.map(elem =>
-      <div className='vendors' key={elem.id}>
-        {elem.saleItems.map(elem => 
-          <div key={elem.itemHash} className='item'> 
-            <img src={elem.icon} alt={elem.name} />
-          </div>  
-        )}
+    let display = this.state.bounties.map(elem =>
+      <div key={elem.location}>
+        <h3>{elem.location}</h3>
+        <div className='vendors'>    
+          {elem.bounties.map(elem => 
+            <div key={elem.itemHash} className='item'> 
+              <img src={elem.icon} alt={elem.name} />
+              <h4>{elem.name}</h4>
+              <h5>{elem.description}</h5>
+              <p>Time: {elem.time}</p>
+              <p>Score: {elem.score.toFixed(2)}</p>             
+              {Object.entries(elem.constraints).map(elem => {
+                  if (elem[1].length !== 0)
+                    return <div key={elem[0]}>{elem[0]}: {elem[1]}</div>
+                }
+              )}
+            </div>  
+          )}
+        </div>
       </div>
     )
     

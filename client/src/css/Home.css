@@ -33,8 +33,22 @@
 }
 
 .item {
-    flex: 0 1 auto;
-    padding: 5px
+    display: grid;
+    grid-template-columns: 70px 200px;
+    grid-template-rows: 50px 100px auto auto;
+    border: 1px solid white;
+    padding: 10px;
+    margin: 10px;
+}
+
+.item h5 {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+.item div {
+    grid-column-start: 1;
+    grid-column-end: 3;
 }
 
 .item img {
