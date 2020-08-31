@@ -70,15 +70,17 @@ class Bounties extends React.Component {
                           <h4>{elem.name.toUpperCase()}</h4>
                         </div>
                         <h5>{elem.description}</h5>
-                        {elem.objectives.map(elem => 
-                          <div className='container' key={elem.id}>                   
-                            <div className='box'></div>
-                            <div className='objective'>
-                              <h5 className='description'>{elem.progressDescription}</h5>
-                              <h5 className='value'>{elem.completionValue}</h5>
+                        <div className='body'>
+                          {elem.objectives.map(elem => 
+                            <div className='container' key={elem.id}>                   
+                              <div className='box'></div>
+                              <div className='objective'>
+                                <h5 className='description'>{elem.progressDescription}</h5>
+                                <h5 className='value'>{elem.completionValue}</h5>
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div> :
                       <div key={elem.itemHash} className='itemContainer'> 
                         <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
@@ -111,10 +113,47 @@ class Bounties extends React.Component {
             <h3>Daily Bounties</h3>
             <div className='bounties'>
               {elem.saleItems.filter(elem => !elem.bountyType.includes('Weekly')).map(elem => 
-                <div key={elem.itemHash} className='itemContainer'> 
-                  <img src={elem.icon} alt={elem.name} />
-                  <h4>{elem.name}</h4>
-                </div>           
+                <div>
+                {this.state.showAll ? 
+                  <div key={elem.itemHash} className='showAllContainer'>
+                    <div className='header'> 
+                      <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
+                      <h4>{elem.name.toUpperCase()}</h4>
+                    </div>
+                    <h5>{elem.description}</h5>
+                    <div className='body'>
+                      {elem.objectives.map(elem => 
+                        <div className='container' key={elem.id}>                   
+                          <div className='box'></div>
+                          <div className='objective'>
+                            <h5 className='description'>{elem.progressDescription}</h5>
+                            <h5 className='value'>{elem.completionValue}</h5>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div> :
+                  <div key={elem.itemHash} className='itemContainer'> 
+                    <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
+                    <h4>{elem.name}</h4>
+                    {elem.show ? 
+                      <div className='tooltip'>
+                        <h4>{elem.name.toUpperCase()}</h4>
+                        <h5>{elem.description}</h5>
+                        {elem.objectives.map(elem => 
+                          <div className='container' key={elem.id}>                   
+                            <div className='box'></div>
+                            <div className='objective'>
+                                <h5 className='description'>{elem.progressDescription}</h5>
+                                <h5 className='value'>{elem.completionValue}</h5>
+                            </div>
+                          </div>
+                        )}
+                      </div> : null
+                    }
+                  </div>
+                }
+              </div>          
               )}
             </div>
           </div> : null}

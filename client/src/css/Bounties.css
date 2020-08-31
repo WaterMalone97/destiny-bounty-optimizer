@@ -38,7 +38,7 @@
     display: grid;
     grid-template-columns: 90px 200px;
     column-gap: 5px;
-    padding: 6px
+    padding: 10px;
 }
 
 .itemContainer img {
@@ -48,21 +48,33 @@
 
 .showAllContainer {
     width: 400px;
-    flex: 0 1 auto;
-    padding: 10px;
+    margin: 10px;
+    background-color: rgba(21, 28, 35, 26);
 }
 
 .showAllContainer .header {
     display: flex;
+    background-color:  rgb(53, 53, 54);  
 }
 
 .showAllContainer .header img {
     width: 60px;
     height: 60px;
+    padding: 7px 0px 0px 7px;
 }
 
 .showAllContainer .header h4 {
     padding-left: 10px;
+}
+
+.showAllContainer h5 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.showAllContainer .body {
+    padding-left: 10px;
+    padding-bottom: 10px;
 }
 
 .bountiesContainer h1 {
@@ -84,7 +96,8 @@
 .tooltip {
     position: absolute;
     z-index: 4;
-    background-color: tomato;
+    background-color: rgb(21, 28, 35);
+    border: 2px solid goldenrod;
     margin-left: 95px;
     margin-top: -40px;
     padding:  0px 10px 15px 10px;
@@ -122,7 +135,8 @@
     height: 27px;
     width: 300px;
 }
-.objective .description{
+
+.objective .description {
     position: relative;
     z-index: 5;
     margin-top: 5px;
@@ -130,12 +144,21 @@
     padding-left: 5px;
 }
 
-.objective .value{
+.objective .value {
     position: relative;
     z-index: 5;
     margin-top: 5px;
     float: right;
     padding-right: 5px;
+}
+
+.bountiesContainer h1 {
+    padding-bottom: 20px;
+}
+
+.bountiesContainer button {
+    float: right;
+    margin-top: -30px;
 }
 
 @media (max-width: 800px) {
@@ -154,5 +177,21 @@
     .itemContainer img {
         width: 72px;
         height: 72px;
+    }
+
+    .showAllContainer {
+        width: 300px;
+    }
+
+    .showAllContainer .objective {
+        width: 240px;
+    }
+    
+    .tooltip {
+        width: 225px;
+    }
+
+    .objective {
+        width: 190px;
     }
 }

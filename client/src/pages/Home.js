@@ -114,6 +114,10 @@ class Home extends React.Component {
             <div className='filter-container'>
               <h2>Filters</h2>
               {filters}
+              <div>
+                <h4>Time: </h4>
+                <input type='range' />
+              </div>
             </div>
             <h2>Bounties</h2>
             <div className='bounty-container'>          
