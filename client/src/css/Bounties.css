@@ -17,6 +17,13 @@
     height: auto;
 }
 
+.vendorInfo button {
+    margin-top: 50px;
+    position: relative;
+    right: -5px;
+    top: -40px
+}
+
 .salesContainer {
     display: flex;
     flex-flow: row wrap;

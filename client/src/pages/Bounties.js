@@ -42,122 +42,141 @@ class Bounties extends React.Component {
     this.setState({ vendors: [...arr] })
   }
 
-  onClick = (event) => {
+  onClick = () => {
     this.setState({ showAll: !this.state.showAll })
+  }
+
+  collapse = (event) => {
+    console.log(event)
+    const vendorIndex = this.state.vendors.map(elem => elem.id).indexOf(event)
+    let arr = [...this.state.vendors]
+    arr[vendorIndex].show = !arr[vendorIndex].show
+    this.setState({ vendors: [...arr] })
   }
 
   render() {
     //console.log(this.state.vendors)
     //console.log(this.props.load)
 
-    let display = this.state.vendors.map(elem => 
-      <div key={elem.id} className='vendorContainer'>
-        <div className='vendorInfo'> 
-          <h2>{elem.name}</h2>
-          <img src={elem.icon} alt={elem.name} />
-        </div>
-        <div className='salesContainer'>
-          {elem.saleItems.filter(elem => elem.bountyType.includes('Weekly')).length !== 0 ? 
-            <div>
-              <h3>Weekly Bounties</h3>
-              <div className='bounties'>
-                {elem.saleItems.filter(elem => elem.bountyType.includes('Weekly')).map(elem =>
-                  <div>
-                    {this.state.showAll ? 
-                      <div key={elem.itemHash} className='showAllContainer'>
-                        <div className='header'> 
-                          <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
-                          <h4>{elem.name.toUpperCase()}</h4>
-                        </div>
-                        <h5>{elem.description}</h5>
-                        <div className='body'>
-                          {elem.objectives.map(elem => 
-                            <div className='container' key={elem.id}>                   
-                              <div className='box'></div>
-                              <div className='objective'>
-                                <h5 className='description'>{elem.progressDescription}</h5>
-                                <h5 className='value'>{elem.completionValue}</h5>
-                              </div>
+    let display = this.state.vendors.map(elem =>
+      <div key={elem.id}>
+        {elem.show ? 
+          <div className='vendorContainer'>
+            <div className='vendorInfo'> 
+              <h2>{elem.name}</h2>
+              <button onClick={this.collapse.bind(this, elem.id)}>Hide</button>          
+              <img src={elem.icon} alt={elem.name} />
+            </div>
+            <div className='salesContainer'>
+              {elem.saleItems.filter(elem => elem.bountyType.includes('Weekly')).length !== 0 ? 
+                <div>
+                  <h3>Weekly Bounties</h3>
+                  <div className='bounties'>
+                    {elem.saleItems.filter(elem => elem.bountyType.includes('Weekly')).map(elem =>
+                      <div key={elem.itemHash}>
+                        {this.state.showAll ? 
+                          <div className='showAllContainer'>
+                            <div className='header'> 
+                              <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
+                              <h4>{elem.name.toUpperCase()}</h4>
                             </div>
-                          )}
-                        </div>
-                      </div> :
-                      <div key={elem.itemHash} className='itemContainer'> 
-                        <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
-                        <h4>{elem.name}</h4>
-                        {elem.show ? 
-                          <div className='tooltip'>
-                            <h4>{elem.name.toUpperCase()}</h4>
                             <h5>{elem.description}</h5>
+                            <div className='body'>
+                              {elem.objectives.map(elem => 
+                                <div className='container' key={elem.id}>                   
+                                  <div className='box'></div>
+                                  <div className='objective'>
+                                    <h5 className='description'>{elem.progressDescription}</h5>
+                                    <h5 className='value'>{elem.completionValue}</h5>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div> :
+                          <div key={elem.itemHash} className='itemContainer'> 
+                            <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
+                            <h4>{elem.name}</h4>
+                            {elem.show ? 
+                              <div className='tooltip'>
+                                <h4>{elem.name.toUpperCase()}</h4>
+                                <h5>{elem.description}</h5>
+                                {elem.objectives.map(elem => 
+                                  <div className='container' key={elem.id}>                   
+                                    <div className='box'></div>
+                                    <div className='objective'>
+                                        <h5 className='description'>{elem.progressDescription}</h5>
+                                        <h5 className='value'>{elem.completionValue}</h5>
+                                    </div>
+                                  </div>
+                                )}
+                              </div> : null
+                            }
+                          </div>
+                        }
+                      </div>                    
+                    )}
+                  </div> 
+                </div> : null
+              }
+
+              {elem.saleItems.filter(elem => !elem.bountyType.includes('Weekly')).length !== 0 ?
+              <div>
+                <h3>Daily Bounties</h3>
+                <div className='bounties'>
+                  {elem.saleItems.filter(elem => !elem.bountyType.includes('Weekly')).map(elem => 
+                    <div key={elem.itemHash}>
+                      {this.state.showAll ? 
+                        <div className='showAllContainer'>
+                          <div className='header'> 
+                            <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
+                            <h4>{elem.name.toUpperCase()}</h4>
+                          </div>
+                          <h5>{elem.description}</h5>
+                          <div className='body'>
                             {elem.objectives.map(elem => 
                               <div className='container' key={elem.id}>                   
                                 <div className='box'></div>
                                 <div className='objective'>
-                                    <h5 className='description'>{elem.progressDescription}</h5>
-                                    <h5 className='value'>{elem.completionValue}</h5>
+                                  <h5 className='description'>{elem.progressDescription}</h5>
+                                  <h5 className='value'>{elem.completionValue}</h5>
                                 </div>
                               </div>
                             )}
-                          </div> : null
-                        }
-                      </div>
-                    }
-                  </div>                    
-                )}
-              </div> 
-            </div> : null
-          }
-
-          {elem.saleItems.filter(elem => !elem.bountyType.includes('Weekly')).length !== 0 ?
-          <div>
-            <h3>Daily Bounties</h3>
-            <div className='bounties'>
-              {elem.saleItems.filter(elem => !elem.bountyType.includes('Weekly')).map(elem => 
-                <div>
-                {this.state.showAll ? 
-                  <div key={elem.itemHash} className='showAllContainer'>
-                    <div className='header'> 
-                      <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
-                      <h4>{elem.name.toUpperCase()}</h4>
-                    </div>
-                    <h5>{elem.description}</h5>
-                    <div className='body'>
-                      {elem.objectives.map(elem => 
-                        <div className='container' key={elem.id}>                   
-                          <div className='box'></div>
-                          <div className='objective'>
-                            <h5 className='description'>{elem.progressDescription}</h5>
-                            <h5 className='value'>{elem.completionValue}</h5>
                           </div>
+                        </div> :
+                        <div key={elem.itemHash} className='itemContainer'> 
+                          <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
+                          <h4>{elem.name}</h4>
+                          {elem.show ? 
+                            <div className='tooltip'>
+                              <h4>{elem.name.toUpperCase()}</h4>
+                              <h5>{elem.description}</h5>
+                              {elem.objectives.map(elem => 
+                                <div className='container' key={elem.id}>                   
+                                  <div className='box'></div>
+                                  <div className='objective'>
+                                      <h5 className='description'>{elem.progressDescription}</h5>
+                                      <h5 className='value'>{elem.completionValue}</h5>
+                                  </div>
+                                </div>
+                              )}
+                            </div> : null
+                          }
                         </div>
-                      )}
-                    </div>
-                  </div> :
-                  <div key={elem.itemHash} className='itemContainer'> 
-                    <img src={elem.icon} alt={elem.name} onMouseOver={this.toggle.bind(this, elem)} onMouseOut={this.toggle.bind(this, elem)}/>
-                    <h4>{elem.name}</h4>
-                    {elem.show ? 
-                      <div className='tooltip'>
-                        <h4>{elem.name.toUpperCase()}</h4>
-                        <h5>{elem.description}</h5>
-                        {elem.objectives.map(elem => 
-                          <div className='container' key={elem.id}>                   
-                            <div className='box'></div>
-                            <div className='objective'>
-                                <h5 className='description'>{elem.progressDescription}</h5>
-                                <h5 className='value'>{elem.completionValue}</h5>
-                            </div>
-                          </div>
-                        )}
-                      </div> : null
-                    }
-                  </div>
-                }
-              </div>          
-              )}
+                      }
+                    </div>          
+                  )}
+                </div>
+              </div> : null}
             </div>
-          </div> : null}
-        </div>
+          </div> : 
+          <div className='vendorContainer'>
+            <div className='vendorInfo'> 
+              <h2>{elem.name}</h2>
+              <button onClick={this.collapse.bind(this, elem.id)}>Show</button>
+            </div> 
+          </div>
+        }
       </div>
     )
 

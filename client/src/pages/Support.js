@@ -35,6 +35,12 @@ class Support extends React.Component {
         this.setState({ submit: true })
     }
 
+    onClick = () => {
+        console.log('Removed cached data')
+        localStorage.removeItem('bounties')
+        localStorage.removeItem('date')
+    }
+
     render() {
 
         return (
@@ -55,6 +61,8 @@ class Support extends React.Component {
                         <h1>Support</h1>
                         <h3>Contact Us</h3>
                         <h4>Email: destinybountyoptimizer@gmail.com</h4>
+                        <h5>Remove locally stored data</h5>
+                        <button onClick={this.onClick}>Delete</button>
                         <h4>Having trouble using our application? Is there a bug? 
                             Have a suggestion? Wanna let us know how we're doing? 
                             Contact us using the email above or the form below.

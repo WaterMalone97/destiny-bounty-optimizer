@@ -33,7 +33,8 @@ class Home extends React.Component {
       }   
     ],
     showLocations: false,
-    toggle: false
+    toggle: false,
+    time: 0.6
   }
 
   async componentDidMount() {
@@ -41,17 +42,17 @@ class Home extends React.Component {
     let date = new Date()
     let tomorrow = new Date(date)
     tomorrow.setDate(tomorrow.getDate() + 1)
-    //console.log(tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
-    //localStorage.removeItem('bounties')
-    //localStorage.removeItem('date')
+
+    console.log('Time accessed: ', date.toISOString())
+    console.log('Date cached: ', localStorage.getItem('date'))
 
     if (localStorage.getItem('bounties')) {
       console.log('Found cached bounties')
-      if (localStorage.getItem('date') >=  tomorrow.toISOString().substr(0,11) + '17:00:00.000Z') {
+      if (date.toISOString() >= localStorage.getItem('date')) {
         console.log('Daily reset')
-        console.log('Date cached: ', localStorage.getItem('date'))
         console.log('Grabbing new bounties')
-        localStorage.setItem('date', date.toISOString())
+        //Overwrite saved date with date for next daily reset
+        localStorage.setItem('date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
         console.log(localStorage.getItem('date'))
         await fetch('api/bounties/optimize?score=60')
           .then(res => res.json())
@@ -68,7 +69,8 @@ class Home extends React.Component {
     }
     
     console.log('No cached bounties')
-    localStorage.setItem('date', date.toISOString())
+    //Save date for next daily reset
+    localStorage.setItem('date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
     console.log(localStorage.getItem('date'))
 
     await fetch('api/bounties/optimize?score=60')
@@ -101,6 +103,24 @@ class Home extends React.Component {
 
   toggle = () => {
     this.setState({ toggle: !this.state.toggle })
+  }
+
+  onChange = (event) => {
+    this.setState({ time: event.target.value})
+  }
+
+  sumbit = async() => {
+    console.log('Filtering bounties')
+    this.setState({ toggle: !this.state.toggle })
+    this.props.isLoading()
+    await fetch('api/bounties/optimize?' + new URLSearchParams({
+      score: Math.round(this.state.time * 100) 
+    }))
+      .then(res => res.json())
+      .then(json => {
+        this.setState({ bounties: json })
+    })
+    this.props.doneLoading()
   }
 
   render() {
@@ -166,16 +186,17 @@ class Home extends React.Component {
               <h2>Bounties</h2>
               <button onClick={this.toggle}>Filters</button>
               {this.state.toggle ?
-              <div>
-                <div className='close' onClick={this.toggle}></div>
-                <div className='filter-container'>
-                  {filters}
-                  <div>
-                    <h4>Time: </h4>
-                    <input type='range' />
-                  </div>
+                <div>
+                  <div className='close' onClick={this.toggle}></div>
+                  <div className='filter-container'>
+                    {filters}
+                    <div>
+                      <h4>Time: {Math.round(this.state.time * 100)}</h4>
+                      <input type='range' id='time' min='0' max='1' defaultValue={this.state.time} step='0.1' onChange={this.onChange}/>
+                    </div>
+                    <button onClick={this.sumbit}>Recalculate</button>
                   </div>    
-              </div> : null
+                </div> : null
               }
               <div className='bounties'>          
                 {display}
