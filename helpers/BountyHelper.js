@@ -388,36 +388,60 @@ class BountyHelper {
         for (let bounty of bounties) {
             let constraints = bounty.constraints;
             let score = 0;
-            if (constraints.weaponType.length > 0) {
-                score += (15 * ((weaponTypes.length - constraints.weaponType.length) / weaponTypes.length));
+
+            // The sum of weights should be 100
+            let weaponScoreWeight = 15;
+            let locationScoreWeight = 25;
+            let ammoScoreWeight = 15;
+            let elementScoreWeight = 15;
+            let timeWeight = 30;
+            
+            // Score weapon constraints
+            let weaponScore;
+            if (constraints.weaponType.length === 0) {
+                weaponScore = 1;
             }
             else {
-                score += 15;
+                weaponScore = (constraints.weaponType.length / weaponTypes.length);
             }
-            if (constraints.location.length > 0) {
-                score += (25 * ((weaponTypes.length - constraints.location.length) / locations.length));
-            }
-            else {
-                score += 25;
-            }
-            if (constraints.ammoType.length > 0) {
-                score += (15 * ((ammoTypes.length - constraints.ammoType.length) / ammoTypes.length));
+            score += (weaponScore * weaponScoreWeight);
+
+            // Score location constraints
+            let locationScore;
+            if (constraints.location.length === 0) {
+                locationScore = 1;
             }
             else {
-                score += 15;
+                locationScore = (constraints.location.length / locations.length);
             }
-            if (constraints.element.length > 0) {
-                score += (15 * ((elementTypes.length - constraints.element.length) / elementTypes.length));
+            score += (locationScore * locationScoreWeight)
+           
+            // Score ammo constraints
+            let ammoScore;
+            if (constraints.ammoType.length === 0) {
+                ammoScore = 1;
             }
             else {
-                score += 15;
+                ammoScore = (constraints.ammoType.length / ammoTypes.length);
             }
+            score += (ammoScore * ammoScoreWeight);
+
+            // Score element constraints
+            let elementScore;
+            if (constraints.element.length === 0) {
+                elementScore = 1;
+            }
+            else {
+                elementScore = (constraints.element.length / elementTypes.length);
+            }
+            score += (elementScore * elementScoreWeight);
+
             switch (bounty.time) {
                 case 1:
-                    score += 30;
+                    score += timeWeight;
                     break;
                 case 2:
-                    score += 15
+                    score += (timeWeight / 2);
                     break;
                 case 3:
                     score += 0
