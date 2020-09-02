@@ -31,16 +31,54 @@ class Home extends React.Component {
         desc: 'Include destination bounties',
         toggle: false
       }   
-    ]
+    ],
+    showLocations: false,
+    toggle: false
   }
 
   async componentDidMount() {
     this.props.isLoading()
+    let date = new Date()
+    let tomorrow = new Date(date)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    //console.log(tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
+    //localStorage.removeItem('bounties')
+    //localStorage.removeItem('date')
+
+    if (localStorage.getItem('bounties')) {
+      console.log('Found cached bounties')
+      if (localStorage.getItem('date') >=  tomorrow.toISOString().substr(0,11) + '17:00:00.000Z') {
+        console.log('Daily reset')
+        console.log('Date cached: ', localStorage.getItem('date'))
+        console.log('Grabbing new bounties')
+        localStorage.setItem('date', date.toISOString())
+        console.log(localStorage.getItem('date'))
+        await fetch('api/bounties/optimize?score=60')
+          .then(res => res.json())
+          .then(json => {
+            this.setState({ bounties: json })
+            localStorage.setItem('bounties', JSON.stringify(json))
+        })
+        return this.props.doneLoading()
+      }
+      let data = JSON.parse(localStorage.getItem('bounties'))
+      console.log(data)        
+      this.setState({ bounties: data })
+      return this.props.doneLoading()
+    }
+    
+    console.log('No cached bounties')
+    localStorage.setItem('date', date.toISOString())
+    console.log(localStorage.getItem('date'))
+
     await fetch('api/bounties/optimize?score=60')
       .then(res => res.json())
       .then(json => {
-          this.setState({ bounties: json })
-      })
+        this.setState({ bounties: json })
+        localStorage.setItem('bounties', JSON.stringify(json))
+    })
+
+    console.log('Caching bounties')
     this.props.doneLoading()
     console.log(this.state.bounties)
   }
@@ -55,13 +93,14 @@ class Home extends React.Component {
         return elem
       })
     }))
-    fetch('/filter', {
-      method: 'POST',
-      headers: {
-      'Content-Type': 'application/json'
-      },
-      body
-    })
+  }
+
+  showLocations = () => {
+    this.setState({ showLocations: !this.state.showLocations })
+  }
+
+  toggle = () => {
+    this.setState({ toggle: !this.state.toggle })
   }
 
   render() {
@@ -83,17 +122,29 @@ class Home extends React.Component {
         <h3>{elem.location}</h3>
         <div className='vendors'>    
           {elem.bounties.map(elem => 
-            <div key={elem.itemHash} className='item'> 
-              <img src={elem.icon} alt={elem.name} />
-              <h4>{elem.name}</h4>
+            <div key={elem.itemHash} className='showAllContainer'>
+              <div className='header'> 
+                <img src={elem.icon} alt={elem.name} />
+                <h4>{elem.name.toUpperCase()}</h4>
+              </div>
               <h5>{elem.description}</h5>
+              <div className='body'>
+                {elem.objectives.map(elem => 
+                  <div className='container' key={elem.id}>                   
+                    <div className='box'></div>
+                      <div className='objective'>
+                        <h5 className='description'>{elem.progressDescription}</h5>
+                        <h5 className='value'>{elem.completionValue}</h5>
+                    </div>
+                  </div>
+                )}
+              </div>
               <p>Time: {elem.time}</p>
               <p>Score: {elem.score.toFixed(2)}</p>             
               {Object.entries(elem.constraints).map(elem => {
                   if (elem[1].length !== 0)
-                    return <div key={elem[0]}>{elem[0]}: {elem[1]}</div>
-                }
-              )}
+                    return <div key={elem[0]}><p>{elem[0]}: {elem[1]}</p></div>
+              })}
             </div>  
           )}
         </div>
@@ -110,18 +161,35 @@ class Home extends React.Component {
             <h1>Destiny Bounty Optimizer</h1>
           </div>
 
-          <div className="main-content">
-            <div className='filter-container'>
-              <h2>Filters</h2>
-              {filters}
+          <div className="main-content">           
+            <div className='bounty-container'>
+              <h2>Bounties</h2>
+              <button onClick={this.toggle}>Filters</button>
+              {this.state.toggle ?
               <div>
-                <h4>Time: </h4>
-                <input type='range' />
+                <div className='close' onClick={this.toggle}></div>
+                <div className='filter-container'>
+                  {filters}
+                  <div>
+                    <h4>Time: </h4>
+                    <input type='range' />
+                  </div>
+                  </div>    
+              </div> : null
+              }
+              <div className='bounties'>          
+                {display}
               </div>
-            </div>
-            <h2>Bounties</h2>
-            <div className='bounty-container'>          
-              {display}
+              <h4>Bounty Locations</h4>
+              {this.state.showLocations ? 
+                <div>
+                  <button onClick={this.showLocations}>Hide Locations</button>            
+                  <div className='locations'>
+                    Locations
+                  </div>
+                </div> :
+                <button onClick={this.showLocations}>Show Locations</button> 
+              }
             </div>
             <div className='instructions-container'>
               <h2>Instructions</h2>

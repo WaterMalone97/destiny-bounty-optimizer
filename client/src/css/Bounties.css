@@ -46,6 +46,10 @@
     height: 80px;
 }
 
+.vendorContainer .showAllContainer {
+    height: 300px;
+}
+
 .showAllContainer {
     width: 400px;
     margin: 10px;
@@ -133,7 +137,7 @@
 .objective {
     background-color: rgb(11, 14, 18);
     height: 27px;
-    width: 300px;
+    width: 340px;
 }
 
 .objective .description {
