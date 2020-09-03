@@ -2,8 +2,15 @@
     margin-bottom: 50px;
 }
 
-.filter-container, .bounty-container, .instructions-container {
+.bounty-container, .instructions-container {
     border-bottom: 2px solid white;
+}
+
+.filter-container {
+    position: absolute;
+    z-index: 6;
+    background-color: rgb(40, 41, 40);
+    padding: 20px 20px 20px 10px;
 }
 
 .filter-option {
@@ -20,7 +27,7 @@
     padding-left: 10px;
 }
 
-.bounty-container {
+.bounty-container .bounties {
     flex: 0 1 auto;
     display: flex;
     flex-flow: row wrap;
@@ -32,35 +39,48 @@
     flex-flow: row wrap;
 }
 
-.item {
-    display: grid;
-    grid-template-columns: 70px 200px;
-    grid-template-rows: 50px 100px auto auto;
-    border: 1px solid white;
-    padding: 10px;
-    margin: 10px;
+.vendors .showAllContainer .header img {
+    width: 40px;
+    height: 40px;
+    padding-top: 10px; 
 }
 
-.item h5 {
-    grid-column-start: 1;
-    grid-column-end: 3;
+.vendors .showAllContainer p {
+    font-size: 16px
 }
 
-.item div {
-    grid-column-start: 1;
-    grid-column-end: 3;
+.vendors .showAllContainer .header h4 {
+    font-size: 16px;
 }
 
-.item img {
-    height: 50px;
-    width: 50px;
+.vendors .showAllContainer h5 {
+    font-size: 14px;
 }
 
-.footer {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-    margin: auto;
-    width: 80vw;
-    margin-bottom: 50px;
+.vendors .showAllContainer .body .container {
+    grid-template-columns: 18px auto;
+}
+
+.vendors .showAllContainer .body .container .box {
+    height: 16px;
+    width: 16px;
+    border: 1px solid rgb(143, 147, 150)
+}
+
+.vendors .showAllContainer .body .container .objective {
+    height: 18px;
+}
+
+.vendors .showAllContainer .body .container .objective h5{
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.close {
+    position: fixed;
+    z-index: 5;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
 }

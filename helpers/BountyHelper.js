@@ -161,7 +161,8 @@ class BountyHelper {
                 });
                 vendorSales.push({
                     id: key,
-                    saleItems
+                    saleItems,
+                    show: true
                 });
             });
             this.getVendorNames(vendorSales);
