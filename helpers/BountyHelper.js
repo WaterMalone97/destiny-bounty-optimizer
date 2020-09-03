@@ -261,23 +261,35 @@ class BountyHelper {
         this.scoreBounties(dailyBounties);
         console.log(dailyBounties.filter(b => b.vendorName === towerVendors.BANSHEE))
         dailyBounties = dailyBounties.filter(b => b.score >= minScore)
-        let sortedBounties = this.sortByScore(dailyBounties);
-
-        for (let location of locations) {
-            // First pull out all bounties for this location
-            let bountiesForLocation = sortedBounties.filter(b => b.constraints.location.includes(location));
-            if (bountiesForLocation.length > 0) {
-                console.log(`Found ${bountiesForLocation.length} for ${location}`);
-                console.log(sortedBounties.length);
-                sortedBounties = sortedBounties.filter(b => !bountiesForLocation.includes(b));
-                console.log(sortedBounties.length);
+        if (dailyBounties.length > 0) {
+            let sortedBounties = this.sortByScore(dailyBounties);
+            for (let location of locations) {
+                // First pull out all bounties for this location
+                let bountiesForLocation = sortedBounties.filter(b => b.constraints.location.includes(location));
+                if (bountiesForLocation.length > 0) {
+                    console.log(`Found ${bountiesForLocation.length} for ${location}`);
+                    console.log(sortedBounties.length);
+                    sortedBounties = sortedBounties.filter(b => !bountiesForLocation.includes(b));
+                    console.log(sortedBounties.length);
+                    globalGroups.push({
+                        location,
+                        bounties: bountiesForLocation
+                    })
+                }
+            }
+            if (globalGroups.length > 0) {
+                this.buildBountyGraph(sortedBounties, globalGroups[0], 0, globalBountyArray, globalGroups);
+            }
+            else {
                 globalGroups.push({
-                    location,
-                    bounties: bountiesForLocation
+                    location: 'Any location',
+                    bounties: sortedBounties
                 })
             }
         }
-        this.buildBountyGraph(sortedBounties, globalGroups[0], 0, globalBountyArray, globalGroups);
+        else {
+            console.log('No bounties found that match the given score constraint');
+        }
         return globalGroups;
     }
 
