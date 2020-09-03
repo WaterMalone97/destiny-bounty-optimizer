@@ -103,6 +103,7 @@ class Home extends React.Component {
 
   toggle = () => {
     this.setState({ toggle: !this.state.toggle })
+
   }
 
   onChange = (event) => {
@@ -184,9 +185,10 @@ class Home extends React.Component {
           <div className="main-content">           
             <div className='bounty-container'>
               <h2>Bounties</h2>
-              <button onClick={this.toggle}>Filters</button>
+              
               {this.state.toggle ?
                 <div>
+                  <button class ="filterbtn" onClick={this.toggle}>Filters <span id="filter-arrow">&#9650;</span></button>
                   <div className='close' onClick={this.toggle}></div>
                   <div className='filter-container'>
                     {filters}
@@ -194,9 +196,9 @@ class Home extends React.Component {
                       <h4>Time: {Math.round(this.state.time * 100)}</h4>
                       <input type='range' id='time' min='0' max='1' defaultValue={this.state.time} step='0.1' onChange={this.onChange}/>
                     </div>
-                    <button onClick={this.sumbit}>Recalculate</button>
+                    <button class="recalculatebtn" onClick={this.sumbit}>Recalculate</button>
                   </div>    
-                </div> : null
+                </div> : <button class ="filterbtn" onClick={this.toggle}>Filters <span id="filter-arrow">&#9660;</span></button>
               }
               <div className='bounties'>          
                 {display}

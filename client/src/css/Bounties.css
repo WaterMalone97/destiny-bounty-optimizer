@@ -172,6 +172,60 @@
     margin-top: -30px;
 }
 
+.recalculatebtn,
+.filterbtn{
+    display:inline-block;
+    padding:0.35em 1.2em;
+    border:0.1em solid #FFFFFF;
+    margin:0 0.3em 0.3em 0;
+    border-radius:0.12em;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-size: 18px;
+    font-weight: bold;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color: white;
+    text-align:center;
+    transition: all 0.2s;
+    background-color: rgba(255, 255, 255, 0.1)
+    }
+
+.recalculatebtn,
+.filterbtn:hover{
+    color:#000000;
+    background-color:#FFFFFF;
+    }
+
+#time {
+    overflow: hidden;
+    width: 90%;
+    height: 15px;
+    border-radius: 5px;
+    border-color: white; 
+    border-width: 2px;
+    outline:always;
+    -webkit-appearance: none;
+    background-color: #9b1e1e3f;
+    margin-bottom: 10px;
+  }
+  
+  #time::-webkit-slider-runnable-track {
+    height: 10px;
+    -webkit-appearance: none;
+    color: #00be2093;
+    margin-top: -10px;
+  }
+  
+  #time::-webkit-slider-thumb {
+    width: 20px;
+    -webkit-appearance: none;
+    height: 20px;
+    cursor: pointer;
+    background: #c7c4c4;
+    box-shadow: -280px 0 0 280px #00be2093;
+  }
+
 @media (max-width: 800px) {
     .vendorInfo img {
         width: 420px;
