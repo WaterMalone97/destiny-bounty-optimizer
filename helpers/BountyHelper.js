@@ -237,6 +237,10 @@ class BountyHelper {
         }
     }
 
+    async getAllBounties() {
+        return Array.from(this._bounties.values())
+    }
+
     async optimize(vendors, minScore = 0) {
 
         let globalBountyArray = [];

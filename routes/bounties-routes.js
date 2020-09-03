@@ -39,4 +39,11 @@ router.get('/optimize', async (req, res) => {
     res.json(bountyArray);
 });
 
+router.get('/all', async (req, res) => {
+    console.log('Grabbing all bounties in the game');
+    this._ctx = req.ctx;
+    let bounties = await this._ctx.bountyHelper.getAllBounties();
+    res.json(bounties);
+});
+
 module.exports = router;
