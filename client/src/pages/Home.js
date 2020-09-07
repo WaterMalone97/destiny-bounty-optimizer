@@ -54,12 +54,17 @@ class Home extends React.Component {
         //Overwrite saved date with date for next daily reset
         localStorage.setItem('date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
         console.log(localStorage.getItem('date'))
-        await fetch('api/bounties/optimize?score=60')
-          .then(res => res.json())
-          .then(json => {
-            this.setState({ bounties: json })
-            localStorage.setItem('bounties', JSON.stringify(json))
-        })
+        try { 
+          await fetch('api/bounties/optimize?score=60')
+            .then(res => res.json())
+            .then(json => {
+              this.setState({ bounties: json })
+              localStorage.setItem('bounties', JSON.stringify(json))
+          })
+        }
+        catch {
+          alert('Bungie API is down fam')
+        }
         return this.props.doneLoading()
       }
       let data = JSON.parse(localStorage.getItem('bounties'))
@@ -73,12 +78,17 @@ class Home extends React.Component {
     localStorage.setItem('date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
     console.log(localStorage.getItem('date'))
 
-    await fetch('api/bounties/optimize?score=60')
-      .then(res => res.json())
-      .then(json => {
-        this.setState({ bounties: json })
-        localStorage.setItem('bounties', JSON.stringify(json))
-    })
+    try {
+      await fetch('api/bounties/optimize?score=60')
+        .then(res => res.json())
+        .then(json => {
+          this.setState({ bounties: json })
+          localStorage.setItem('bounties', JSON.stringify(json))
+      })
+    }
+    catch {
+      alert('Bungie API is down fam')
+    }
 
     console.log('Caching bounties')
     this.props.doneLoading()
@@ -113,13 +123,19 @@ class Home extends React.Component {
     console.log('Filtering bounties')
     this.setState({ toggle: !this.state.toggle })
     this.props.isLoading()
-    await fetch('api/bounties/optimize?' + new URLSearchParams({
-      score: Math.round(this.state.time * 100) 
-    }))
-      .then(res => res.json())
-      .then(json => {
-        this.setState({ bounties: json })
-    })
+    try {
+      await fetch('api/bounties/optimize?' + new URLSearchParams({
+        score: Math.round(this.state.time * 100) 
+      }))
+        .then(res => res.json())
+        .then(json => {
+          this.setState({ bounties: json })
+      })
+    }
+    catch {
+      alert('Bungie API is down fam')
+    }
+    
     this.props.doneLoading()
   }
 
