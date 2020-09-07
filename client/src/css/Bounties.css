@@ -183,7 +183,6 @@
     text-decoration:none;
     font-size: 18px;
     font-weight: bold;
-    font-family:'Roboto',sans-serif;
     font-weight:300;
     color: white;
     text-align:center;
@@ -191,7 +190,7 @@
     background-color: rgba(255, 255, 255, 0.1)
     }
 
-.recalculatebtn,
+.recalculatebtn:hover,
 .filterbtn:hover{
     color:#000000;
     background-color:#FFFFFF;
@@ -206,8 +205,8 @@
     border-width: 2px;
     outline:always;
     -webkit-appearance: none;
-    background-color: #9b1e1e3f;
-    margin-bottom: 10px;
+    background-color: #1e269b93;
+    margin-bottom: 40px;
   }
   
   #time::-webkit-slider-runnable-track {
@@ -224,6 +223,10 @@
     cursor: pointer;
     background: #c7c4c4;
     box-shadow: -280px 0 0 280px #00be2093;
+  }
+
+  #time-number{
+      margin-bottom: 10px;
   }
 
 @media (max-width: 800px) {

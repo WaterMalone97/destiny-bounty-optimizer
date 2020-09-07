@@ -193,7 +193,7 @@ class Home extends React.Component {
                   <div className='filter-container'>
                     {filters}
                     <div>
-                      <h4>Time: {Math.round(this.state.time * 100)}</h4>
+                      <h4 id="time-number">Time: {Math.round(this.state.time * 100)}</h4>
                       <input type='range' id='time' min='0' max='1' defaultValue={this.state.time} step='0.1' onChange={this.onChange}/>
                     </div>
                     <button class="recalculatebtn" onClick={this.sumbit}>Recalculate</button>
