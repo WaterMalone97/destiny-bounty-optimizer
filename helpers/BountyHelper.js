@@ -32,7 +32,7 @@ const vendorsArray = [towerVendors.ZAVALA, towerVendors.DRIFTER, towerVendors.BA
 towerVendors.ERIS, towerVendors.ASHER, towerVendors.VANCE, towerVendors.ANA, towerVendors.FAILSAFE, towerVendors.SLOANE, towerVendors.DEVRIM, towerVendors.SPIDER, towerVendors.ADA]
 const weaponTypes = ['Auto', 'Pulse', 'Sidearm', 'Scout', 'Hand Cannon', 'Fusion', 'Bow', 'Sniper', 'Shotgun', 'Super',
     'Grenade', 'GrenadeLauncher', 'Finisher', 'Melee', 'Abilities', 'Rocket', 'Submachine', 'Machine'];
-const locations = ['Crucible', 'Gambit', 'Gambit Prime', 'Strikes', 'EDZ', 'Moon', 'IO', 'Mercury', 'Mars', 'Nessus', 'Titan', 'Tangled Shore'];
+const locations = ['Crucible', 'Gambit Prime', 'Strikes', 'EDZ', 'Moon', 'IO', 'Mercury', 'Mars', 'Nessus', 'Titan', 'Tangled Shore'];
 const elementTypes = ['Void', 'Solar', 'Arc'];
 const ammoTypes = ['Primary', 'Special', 'Heavy']
 const Bounty = require('../models/Bounty');
@@ -148,39 +148,18 @@ class BountyHelper {
                 }
             }
             response = await axios(bountyRequest);
-            console.log('Grabbed bounties');
-            //let vendorSales = Object.entries(response.data.Response.sales.data).map((sale) => ( { [sale[0]]: sale[1] } ));
-            let vendorSales = [];
-            Object.keys(response.data.Response.sales.data).map(key => {
-                let saleItems = [];
-                Object.keys(response.data.Response.sales.data[key].saleItems).map(item => {
-                    saleItems.push({
-                        id: item,
-                        ...response.data.Response.sales.data[key].saleItems[item]
-                    });
-                });
-                vendorSales.push({
-                    id: key,
-                    saleItems,
-                    show: true
-                });
-            });
-            this.getVendorNames(vendorSales);
-            this.getBountyInfo(vendorSales);
-            return vendorSales;
         }
         catch (err) {
             if (err.response.status == 401) {
                 console.log('Token expired, refreshing token')
                 await this._ctx.tokenHelper.refreshToken();
-                this.getBounties();
+                response = await axios(bountyRequest);
             }
             else {
-                throw new Error('Unable to get bounties', err.response.status);
+                throw new Error(`Unable to get bounties: ${err.response.statusText}`, err.response.status);
             }
         }
         console.log('Grabbed bounties');
-        //let vendorSales = Object.entries(response.data.Response.sales.data).map((sale) => ( { [sale[0]]: sale[1] } ));
         let vendorSales = [];
         Object.keys(response.data.Response.sales.data).map(key => {
             let saleItems = [];
@@ -271,13 +250,11 @@ class BountyHelper {
                 // First pull out all bounties for this location
                 let bountiesForLocation = sortedBounties.filter(b => b.constraints.location.includes(location));
                 if (bountiesForLocation.length > 0) {
-                    console.log(`Found ${bountiesForLocation.length} for ${location}`);
-                    console.log(sortedBounties.length);
                     sortedBounties = sortedBounties.filter(b => !bountiesForLocation.includes(b));
-                    console.log(sortedBounties.length);
                     globalGroups.push({
                         location,
-                        bounties: bountiesForLocation
+                        bounties: bountiesForLocation,
+                        noBountyFound: 1
                     })
                 }
             }
@@ -316,7 +293,7 @@ class BountyHelper {
 
             // Now find the single bounty with the highest score & most matching constraints
             let mostCompatibleBounty = {
-                numMatched: -1,
+                numMatched: 0,
                 score: 0,
             }
 
@@ -360,10 +337,18 @@ class BountyHelper {
                 bounties = bounties.filter(b => b !== mostCompatibleBounty.bounty);
             }
             else {
-                let bounty = bounties.filter(b => !b.constraints.excludedLocation.includes(currentGroup.location));
-                if (bounty.length > 0) {
-                    currentGroup.bounties.push(bounty[0]);
-                    bounties = bounties.filter(b => b !== bounty[0]);
+                if (currentGroup.noBountyFound && currentGroup.noBountyFound <= 0 || bounties.length === 1) {
+                    for (let group of globalGroups) {
+                        group.noBountyFound++;
+                    }
+                    let bounty = bounties.filter(b => !b.constraints.excludedLocation.includes(currentGroup.location));
+                    if (bounty.length > 0) {
+                        currentGroup.bounties.push(bounty[0]);
+                        bounties = bounties.filter(b => b !== bounty[0]);
+                    }
+                }
+                else {
+                    currentGroup.noBountyFound--;
                 }
             }
             i++
@@ -525,12 +510,7 @@ class BountyHelper {
                     break;
                 case(towerVendors.DRIFTER):
                     // Drifter
-                    if (bounty.description.toUpperCase().includes('PRIME')) {
-                        bounty.constraints.location.push('Gambit Prime');
-                    }
-                    else {
-                        bounty.constraints.location.push('Gambit');
-                    }
+                    bounty.constraints.location.push('Gambit Prime');
                     locationSpecificBounties.push(bounty);
                     break;
                 case(towerVendors.SHAXX):
