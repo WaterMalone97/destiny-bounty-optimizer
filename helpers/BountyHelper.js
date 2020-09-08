@@ -148,39 +148,18 @@ class BountyHelper {
                 }
             }
             response = await axios(bountyRequest);
-            console.log('Grabbed bounties');
-            //let vendorSales = Object.entries(response.data.Response.sales.data).map((sale) => ( { [sale[0]]: sale[1] } ));
-            let vendorSales = [];
-            Object.keys(response.data.Response.sales.data).map(key => {
-                let saleItems = [];
-                Object.keys(response.data.Response.sales.data[key].saleItems).map(item => {
-                    saleItems.push({
-                        id: item,
-                        ...response.data.Response.sales.data[key].saleItems[item]
-                    });
-                });
-                vendorSales.push({
-                    id: key,
-                    saleItems,
-                    show: true
-                });
-            });
-            this.getVendorNames(vendorSales);
-            this.getBountyInfo(vendorSales);
-            return vendorSales;
         }
         catch (err) {
             if (err.response.status == 401) {
                 console.log('Token expired, refreshing token')
                 await this._ctx.tokenHelper.refreshToken();
-                this.getBounties();
+                response = await axios(bountyRequest);
             }
             else {
-                throw new Error('Unable to get bounties', err.response.status);
+                throw new Error(`Unable to get bounties: ${err.response.statusText}`, err.response.status);
             }
         }
         console.log('Grabbed bounties');
-        //let vendorSales = Object.entries(response.data.Response.sales.data).map((sale) => ( { [sale[0]]: sale[1] } ));
         let vendorSales = [];
         Object.keys(response.data.Response.sales.data).map(key => {
             let saleItems = [];
