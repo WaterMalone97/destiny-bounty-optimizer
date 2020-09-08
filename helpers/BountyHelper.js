@@ -133,20 +133,20 @@ class BountyHelper {
      */
     async getBounties() {
         let response;
-        try {
-            let token = await this._ctx.tokenHelper.grabToken();
-            let bountyRequest = {
-                url: `https://www.bungie.net/Platform/Destiny2/${process.env.mem_type}/Profile/${process.env.member_id}/Character/${process.env.char_id}/Vendors/`,
-                method: 'GET',
-                headers: {
-                    'X-API-Key': process.env.apiKey, 
-                    'Authorization': 'Bearer ' + token
-                },
-                params: {
-                    // Specifies the type of data bungie should give, in this case, 402 specifies vendor sales
-                    components: 402
-                }
+        let token = await this._ctx.tokenHelper.grabToken();
+        let bountyRequest = {
+            url: `https://www.bungie.net/Platform/Destiny2/${process.env.mem_type}/Profile/${process.env.member_id}/Character/${process.env.char_id}/Vendors/`,
+            method: 'GET',
+            headers: {
+                'X-API-Key': process.env.apiKey, 
+                'Authorization': 'Bearer ' + token
+            },
+            params: {
+                // Specifies the type of data bungie should give, in this case, 402 specifies vendor sales
+                components: 402
             }
+        }
+        try {
             response = await axios(bountyRequest);
         }
         catch (err) {

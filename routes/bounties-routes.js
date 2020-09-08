@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     }
     catch(err) {
         console.log('ERROR GETTING BOUNTIES:', err)
-        res.status(500);
+        res.status(500).end();
     }
 });
 
@@ -37,11 +37,11 @@ router.get('/optimize', async (req, res) => {
     try {
         let vendorSales = await this._ctx.bountyHelper.getBounties();
         let bountyArray = await this._ctx.bountyHelper.optimize(JSON.parse(JSON.stringify(vendorSales)), minScore);
-    res.json(bountyArray);
+        res.json(bountyArray);
     }
     catch(err) {
         console.log('ERROR GETTING BOUNTIES:', err)
-        res.status(500);
+        res.status(500).end();
     }
 });
 
