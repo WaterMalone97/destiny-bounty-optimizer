@@ -2,8 +2,9 @@
     margin-bottom: 50px;
 }
 
-.bounty-container, .instructions-container {
+.filters, .bounty-container, .instructions-container {
     border-bottom: 2px solid white;
+    margin-bottom: 5px;
 }
 
 .filter-container {
@@ -13,6 +14,7 @@
     padding: 20px 20px 20px 20px;
     border: 0.1em solid white;
     border-radius: 0.12em;
+    margin-top:-1px
 }
 
 .filter-container input{
@@ -33,10 +35,21 @@
     padding-left: 10px;
 }
 
-.bounty-container .bounties {
-    flex: 0 1 auto;
+.toggled-container {
     display: flex;
     flex-flow: row wrap;
+    margin-top: 15px;
+}
+
+.toggled {
+    display: flex;
+    align-items: center;
+    background-color: gray;
+    border-radius: 10px;
+    height: 25px;
+    padding: 0px 5px 0px 5px;
+    margin-right: 15px;
+    margin-bottom: 10px;
 }
 
 .vendors{
@@ -109,13 +122,14 @@
     background-color: rgba(255, 255, 255, 0.1);
     z-index: 6;
     position: relative;
+    height: 35px;
 }
 
 .recalculatebtn:hover,
-.filterbtn:hover{
+.filterbtn:hover {
     color:black;
     background-color:white;
-    }
+}
 
 #time {
     overflow: hidden;
@@ -130,14 +144,14 @@
     margin-bottom: 40px;
   }
   
-  #time::-webkit-slider-runnable-track {
+#time::-webkit-slider-runnable-track {
     height: 10px;
     -webkit-appearance: none;
     color: #00be2093;
     margin-top: -10px;
   }
   
-  #time::-webkit-slider-thumb {
+#time::-webkit-slider-thumb {
     width: 20px;
     -webkit-appearance: none;
     height: 20px;
@@ -146,6 +160,11 @@
     box-shadow: -280px 0 0 280px #00be2093;
   }
 
-  #time-number{
-      margin-bottom: 10px;
-  }
+#time-number {
+    margin-bottom: 10px;
+}
+
+.collapse-btn {
+    float: right;
+    margin-top: -50px
+}

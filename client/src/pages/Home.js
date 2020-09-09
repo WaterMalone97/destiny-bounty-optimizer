@@ -29,12 +29,15 @@ class Home extends React.Component {
       },
       {
         name: 'Destinations',
-        desc: 'Include destination bounties',
+        desc: 'Exclude destination bounties',
         toggle: false
       }   
     ],
+    showBounties: true,
+    showInstructions: true,
+    showRewards: true,
     showLocations: false,
-    toggle: false,
+    toggleFilters: false,
     time: 0.6,
     bungoAPI: true
   }
@@ -123,8 +126,8 @@ class Home extends React.Component {
     this.setState({ showLocations: !this.state.showLocations })
   }
 
-  toggle = () => {
-    this.setState({ toggle: !this.state.toggle })
+  toggle = (event) => {
+    this.setState({ [event]: !this.state[event] })
 
   }
 
@@ -163,6 +166,16 @@ class Home extends React.Component {
           <div>
           <h4>{elem.desc}</h4>
           </div>
+      </div>
+    )
+
+    let toggledFilters = this.state.filters.map(elem => 
+      <div key={elem.name}>
+        {elem.toggle ? 
+          <div className='toggled'>
+            <h5>{elem.desc}</h5>
+          </div> : null
+        }
       </div>
     )
 
@@ -219,49 +232,63 @@ class Home extends React.Component {
               </div>
             }
             <div className="main-content">
-              {this.state.toggle ?
-                <div>
-                  <button class ="filterbtn" onClick={this.toggle}>Filters <span id="filter-arrow">&#9650;</span></button>
-
-                  <div className='close' onClick={this.toggle}></div>
+              {this.state.toggleFilters ?
+                <div>               
+                  <button className="filterbtn" onClick={this.toggle.bind(this, 'toggleFilters')}>Filters <span id="filter-arrow">&#9650;</span></button>
+                  <div className='close' onClick={this.toggle.bind(this, 'toggleFilters')}></div>
                   <div className='filter-container'>
                     {filters}
                     <div>
                       <h4 id="time-number">Time: {Math.round(this.state.time * 100)}</h4>
                       <input type='range' id='time' min='0' max='1' defaultValue={this.state.time} step='0.1' onChange={this.onChange}/>
                     </div>
-                    <button class="recalculatebtn" onClick={this.sumbit}>Recalculate</button>
+                    <button className="recalculatebtn" onClick={this.sumbit}>Recalculate</button>
                   </div>    
-                </div> : 
-                <div>
-                  <button class ="filterbtn" onClick={this.toggle}>Filters <span id="filter-arrow">&#9660;</span></button>
-
-                </div>
+                </div> : <button className="filterbtn" onClick={this.toggle.bind(this, 'toggleFilters')}>Filters <span id="filter-arrow">&#9660;</span></button>               
               }
+              <div className='filters'>  
+                <div className='toggled-container'>
+                  {toggledFilters}
+                </div>
+              </div>
+
               <h2>Bounties</h2>
-              <div className='bounties'> 
-                <div>     
-                  {display}
-                </div>             
-                <h4>Bounty Locations</h4>
-                {this.state.showLocations ? 
+              <div className='bounty-container'>
+                {this.state.showBounties ? 
                   <div>
-                    <button onClick={this.showLocations}>Hide Locations</button>            
-                    <div className='locations'>
-                      Locations
-                    </div>
-                  </div> : <button onClick={this.showLocations}>Show Locations</button> 
-                }
+                    <button className='collapse-btn' onClick={this.toggle.bind(this, 'showBounties')}>&#9650;</button>  
+                    {display}
+                  </div> : <button className='collapse-btn' onClick={this.toggle.bind(this, 'showBounties')}>&#9660;</button>  
+                }                                               
               </div>
 
+              <h2>Instructions</h2>
               <div className='instructions-container'>
-                <h2>Instructions</h2>
+              {this.state.showInstructions ?
+                <div>
+                  <button className='collapse-btn' onClick={this.toggle.bind(this, 'showInstructions')}>&#9650;</button>  
+                  <h4>Bounty Locations</h4>
+                  {this.state.showLocations ? 
+                    <div>
+                      <button onClick={this.showLocations}>Hide Locations</button>            
+                      <div className='locations'>
+                        Locations
+                      </div>
+                    </div> : <button onClick={this.showLocations}>Show Locations</button> 
+                  }
+                </div> : <button className='collapse-btn' onClick={this.toggle.bind(this, 'showInstructions')}>&#9660;</button>  
 
+              }
               </div>
 
+              <h2>Rewards</h2>
               <div className='rewards-container'>
-                <h2>Rewards</h2>
-
+                {this.state.showRewards ? 
+                  <div>
+                    <button className='collapse-btn' onClick={this.toggle.bind(this, 'showRewards')}>&#9650;</button> 
+                    Place rewards here
+                  </div> : <button className='collapse-btn' onClick={this.toggle.bind(this, 'showRewards')}>&#9660;</button> 
+                }                    
               </div>
             </div>
           </div>: <Loading /> 
