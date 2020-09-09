@@ -38,7 +38,9 @@ class Support extends React.Component {
     onClick = () => {
         console.log('Removed cached data')
         localStorage.removeItem('bounties')
+        localStorage.removeItem('vendors')
         localStorage.removeItem('date')
+        localStorage.removeItem('vendors-date')
     }
 
     render() {

@@ -5,6 +5,7 @@ import { isLoading, doneLoading } from '../actions/loadingActions';
 import Loading from '../components/Loading';
 import Navbar from '../components/Navbar'
 import '../css/Home.css';
+import { Redirect } from 'react-router';
 
 class Home extends React.Component {
 
@@ -34,7 +35,8 @@ class Home extends React.Component {
     ],
     showLocations: false,
     toggle: false,
-    time: 0.6
+    time: 0.6,
+    bungoAPI: true
   }
 
   async componentDidMount() {
@@ -46,6 +48,7 @@ class Home extends React.Component {
     console.log('Time accessed: ', date.toISOString())
     console.log('Date cached: ', localStorage.getItem('date'))
 
+    //Check if data is cached
     if (localStorage.getItem('bounties')) {
       console.log('Found cached bounties')
       if (date.toISOString() >= localStorage.getItem('date')) {
@@ -56,14 +59,18 @@ class Home extends React.Component {
         console.log(localStorage.getItem('date'))
         try { 
           await fetch('api/bounties/optimize?score=60')
-            .then(res => res.json())
+            .then(res => {
+              if (res.status !== 200)
+                throw new Error('Bad Response')
+              return res.json()
+            })
             .then(json => {
               this.setState({ bounties: json })
               localStorage.setItem('bounties', JSON.stringify(json))
-          })
+            })
         }
         catch {
-          alert('Bungie API is down fam')
+          this.setState({ bungoAPI: false })
         }
         return this.props.doneLoading()
       }
@@ -73,21 +80,26 @@ class Home extends React.Component {
       return this.props.doneLoading()
     }
     
+    //If no data is cached, grab bounties
     console.log('No cached bounties')
     //Save date for next daily reset
     localStorage.setItem('date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
-    console.log(localStorage.getItem('date'))
+    console.log('Next reset:', localStorage.getItem('date'))
 
     try {
       await fetch('api/bounties/optimize?score=60')
-        .then(res => res.json())
+        .then(res => {
+          if (res.status !== 200)
+            throw new Error('Bad Response')
+          return res.json()
+        })
         .then(json => {
           this.setState({ bounties: json })
           localStorage.setItem('bounties', JSON.stringify(json))
-      })
+        })
     }
     catch {
-      alert('Bungie API is down fam')
+      this.setState({ bungoAPI: false })
     }
 
     console.log('Caching bounties')
@@ -191,20 +203,26 @@ class Home extends React.Component {
     return (
       <div>
         {this.props.load.loadPage ?
-        <div className='home'>
-          <Navbar /> 
-          <div className="main"></div>
-          <div className="main-title">
-            <h1>Destiny Bounty Optimizer</h1>
-          </div>
-
-          <div className="main-content">           
-            <div className='bounty-container'>
-              <h2>Bounties</h2>
-              
+          <div className='home'>
+            <Navbar /> 
+            <div className="main"></div>
+            <div className="main-title">
+              <h1>Destiny Bounty Optimizer</h1>
+            </div>
+            {this.state.bungoAPI ? null: 
+              <div className='error-container'>
+                {this.state.bounties.length === 0 ? <Redirect to='/down'/> : null}
+                <h4>
+                  The Bungie API is currently down and we are using cached data to display bounties.
+                  The bounties may or may not be correct depending on the last time you accessed this site.
+                </h4>
+              </div>
+            }
+            <div className="main-content">
               {this.state.toggle ?
                 <div>
                   <button class ="filterbtn" onClick={this.toggle}>Filters <span id="filter-arrow">&#9650;</span></button>
+
                   <div className='close' onClick={this.toggle}></div>
                   <div className='filter-container'>
                     {filters}
@@ -214,32 +232,40 @@ class Home extends React.Component {
                     </div>
                     <button class="recalculatebtn" onClick={this.sumbit}>Recalculate</button>
                   </div>    
-                </div> : <button class ="filterbtn" onClick={this.toggle}>Filters <span id="filter-arrow">&#9660;</span></button>
-              }
-              <div className='bounties'>          
-                {display}
-              </div>
-              <h4>Bounty Locations</h4>
-              {this.state.showLocations ? 
+                </div> : 
                 <div>
-                  <button onClick={this.showLocations}>Hide Locations</button>            
-                  <div className='locations'>
-                    Locations
-                  </div>
-                </div> :
-                <button onClick={this.showLocations}>Show Locations</button> 
+                  <button class ="filterbtn" onClick={this.toggle}>Filters <span id="filter-arrow">&#9660;</span></button>
+
+                </div>
               }
-            </div>
-            <div className='instructions-container'>
-              <h2>Instructions</h2>
+              <h2>Bounties</h2>
+              <div className='bounties'> 
+                <div>     
+                  {display}
+                </div>             
+                <h4>Bounty Locations</h4>
+                {this.state.showLocations ? 
+                  <div>
+                    <button onClick={this.showLocations}>Hide Locations</button>            
+                    <div className='locations'>
+                      Locations
+                    </div>
+                  </div> : <button onClick={this.showLocations}>Show Locations</button> 
+                }
+              </div>
 
-            </div>
-            <div className='rewards-container'>
-              <h2>Rewards</h2>
+              <div className='instructions-container'>
+                <h2>Instructions</h2>
 
+              </div>
+
+              <div className='rewards-container'>
+                <h2>Rewards</h2>
+
+              </div>
             </div>
-          </div>
-        </div>: <Loading /> }
+          </div>: <Loading /> 
+        }
       </div>
     )
   }

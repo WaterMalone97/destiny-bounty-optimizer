@@ -76,7 +76,7 @@ class Rank extends React.Component {
         let bounties = this.state.bounties.map((elem, index) => 
           <tr key={elem.id} className='ranked'>
             <td><h4>{index}</h4></td>
-            <td className='span'><img src={elem.icon} /><h4>{elem.description}</h4></td>
+            <td className='span'><img src={elem.icon} alt=''/><h4>{elem.description}</h4></td>
             <td><h4>{elem.completionValue} {elem.progressDescription}</h4></td>
             <td><h4>{elem.time}</h4></td>
           </tr>
