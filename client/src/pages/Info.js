@@ -3,13 +3,6 @@ import Navbar from '../components/Navbar'
 
 class Info extends React.Component {
 
-  // fetch api example
-  /* componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/todos/1')
-      .then(res => res.json())
-      .then(json => console.log(json))
-  } */
-
   render() {
 
     return (

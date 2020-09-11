@@ -2,8 +2,9 @@
     margin-bottom: 50px;
 }
 
-.bounty-container, .instructions-container {
+.filters, .bounty-container, .instructions-container {
     border-bottom: 2px solid white;
+    margin-bottom: 5px;
 }
 
 .filter-container {
@@ -11,6 +12,9 @@
     z-index: 6;
     background-color: rgb(40, 41, 40);
     padding: 20px 20px 20px 20px;
+    border: 0.1em solid white;
+    border-radius: 0.12em;
+    margin-top:-1px
 }
 
 .filter-container input{
@@ -31,10 +35,21 @@
     padding-left: 10px;
 }
 
-.bounty-container .bounties {
-    flex: 0 1 auto;
+.toggled-container {
     display: flex;
     flex-flow: row wrap;
+    margin-top: 15px;
+}
+
+.toggled {
+    display: flex;
+    align-items: center;
+    background-color: gray;
+    border-radius: 10px;
+    height: 25px;
+    padding: 0px 5px 0px 5px;
+    margin-right: 15px;
+    margin-bottom: 10px;
 }
 
 .vendors{
@@ -87,4 +102,74 @@
     width: 100%;
     top: 0;
     left: 0;
+}
+
+.recalculatebtn,
+.filterbtn{
+    display: inline-block;
+    padding: 0.35em 1.2em;
+    border: 0.1em solid white;
+    margin-top: 0.5em;
+    border-radius: 0.12em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 300;
+    color: white;
+    text-align: center;
+    transition: all 0.2s;
+    background-color: rgba(255, 255, 255, 0.1);
+    z-index: 6;
+    position: relative;
+    height: 35px;
+}
+
+.recalculatebtn:hover,
+.filterbtn:hover {
+    color:black;
+    background-color:white;
+}
+
+#time {
+    overflow: hidden;
+    width: 90%;
+    height: 15px;
+    border-radius: 5px;
+    border-color: white; 
+    border-width: 2px;
+    outline:always;
+    -webkit-appearance: none;
+    background-color: #1e269b93;
+    margin-bottom: 40px;
+  }
+  
+#time::-webkit-slider-runnable-track {
+    height: 10px;
+    -webkit-appearance: none;
+    color: #00be2093;
+    margin-top: -10px;
+  }
+  
+#time::-webkit-slider-thumb {
+    width: 20px;
+    -webkit-appearance: none;
+    height: 20px;
+    cursor: pointer;
+    background: #c7c4c4;
+    box-shadow: -280px 0 0 280px #00be2093;
+  }
+
+#time-number {
+    margin-bottom: 10px;
+}
+
+.collapse-btn {
+    float: right;
+    margin-top: -55px;
+    transition: all 0.2s;
+}
+
+.collapse-btn:hover {
+    cursor: pointer;
+    color: goldenrod;
 }

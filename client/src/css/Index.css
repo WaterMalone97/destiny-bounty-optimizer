@@ -45,3 +45,14 @@ body {
   position: relative;
   box-shadow: 10px 10px 8px #0A0D0B;
 }
+
+.error-container {
+  margin: auto;
+  width: 80vw;
+  background-color: rgb(221, 60, 60);
+  border-radius: 5px;
+}
+
+.error-container h4{
+padding: 5px;
+}

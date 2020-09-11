@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Bounties from './pages/Bounties';
 import Rank from './pages/Rank';
 import Support from './pages/Support';
+import Unavailable from './pages/Unavailable'
 import querystring from 'querystring'
 
 class App extends React.Component {
@@ -26,6 +27,7 @@ class App extends React.Component {
           <Route path='/bounties' component={Bounties}/>
           <Route path='/support' component={Support}/>
           <Route path='/rank' component={Rank}/>
+          <Route path='/down' component={Unavailable}/>
           <Route path='/' render={() => <h1>404: page not found</h1>}/>
         </Switch>
       </div>
