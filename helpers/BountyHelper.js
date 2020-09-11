@@ -33,6 +33,7 @@ towerVendors.ERIS, towerVendors.ASHER, towerVendors.VANCE, towerVendors.ANA, tow
 const weaponTypes = ['Auto', 'Pulse', 'Sidearm', 'Scout', 'Hand Cannon', 'Fusion', 'Bow', 'Sniper', 'Shotgun', 'Super',
     'Grenade', 'GrenadeLauncher', 'Finisher', 'Melee', 'Abilities', 'Rocket', 'Submachine', 'Machine'];
 const locations = ['Crucible', 'Gambit Prime', 'Strikes', 'EDZ', 'Moon', 'IO', 'Mercury', 'Mars', 'Nessus', 'Titan', 'Tangled Shore'];
+const planets = ['EDZ', 'Moon', 'IO', 'Mercury', 'Mars', 'Nessus', 'Titan', 'Tangled Shore'];
 const elementTypes = ['Void', 'Solar', 'Arc'];
 const ammoTypes = ['Primary', 'Special', 'Heavy']
 const Bounty = require('../models/Bounty');
@@ -254,7 +255,8 @@ class BountyHelper {
                     globalGroups.push({
                         location,
                         bounties: bountiesForLocation,
-                        noBountyFound: 1
+                        noBountyFound: 1,
+                        constraints: []
                     })
                 }
             }
@@ -271,10 +273,21 @@ class BountyHelper {
         else {
             console.log('No bounties found that match the given score constraint');
         }
+        let strikeGroup = globalGroups.find(g => g.location === 'Strikes');
+        if (strikeGroup && strikeGroup.bounties.length > 0) {
+            this.suggestStrike(strikeGroup, globalGroups);
+        }
         return globalGroups;
     }
 
-    buildBountyGraph(bounties, currentGroup, i, globalBountyArray, globalGroups) {
+    /**
+     * Find the optimal boutnies to group for each location
+     * @param {Object[]} bounties The array of daily bounties
+     * @param {Object} currentGroup The group or location to analyze
+     * @param {Number} i The current index
+     * @param {Object[]} globalGroups The array of bounty groups
+     */
+    buildBountyGraph(bounties, currentGroup, i, globalGroups) {
         if (bounties.length > 0) {
             console.log('Building bounty group for location:', currentGroup.location);           
             
@@ -289,12 +302,17 @@ class BountyHelper {
                 if (bounty.constraints.element.length > 0) {
                     groupConstraints.push(...bounty.constraints.element);
                 }
+                if (bounties.constraints.enemyType.length > 0) {
+                    groupConstraints.push(...bounty.constraints.enemyType);
+                }
             }
+
+            currentGroup.constraints.push(groupConstraints);
 
             // Now find the single bounty with the highest score & most matching constraints
             let mostCompatibleBounty = {
                 numMatched: 0,
-                score: 0,
+                score: 0
             }
 
             for (let bounty of bounties) {
@@ -317,6 +335,13 @@ class BountyHelper {
                     if (bounty.constraints.element.length > 0) {
                         for (let element of bounty.constraints.element) {
                             if (groupConstraints.includes(element)) {
+                                numMatched++;
+                            }
+                        }
+                    }
+                    if (bounty.constraints.enemyType.length > 0) {
+                        for (let enemyType of bounty.constraints.enemyType) {
+                            if (groupConstraints.includes(enemyType)) {
                                 numMatched++;
                             }
                         }
@@ -357,10 +382,7 @@ class BountyHelper {
                 i = 0;
             }
 
-            return this.buildBountyGraph(bounties, globalGroups[i], i, globalBountyArray, globalGroups);
-        }
-        else {
-            return globalBountyArray;
+            return this.buildBountyGraph(bounties, globalGroups[i], i, globalGroups);
         }
     }
 
@@ -469,6 +491,7 @@ class BountyHelper {
                 element: [],
                 location: [],
                 ammoType: [],
+                enemyType: [],
                 excludedLocation: []
             };
             let knownBounty = this._bounties.get(bounty.itemHash.toString())
@@ -577,22 +600,27 @@ class BountyHelper {
                     switch(term) {
                         case enemyTypes.CABAL:
                             bounty.constraints.excludedLocation.push(...['Moon']);
+                            bounty.constraints.enemyType.push(enemyTypes.CABAL);
                             break;
                         case enemyTypes.FALLEN:
                             bounty.constraints.excludedLocation.push(...['Mercury', 'Mars', 'IO']);
+                            bounty.constraints.enemyType.push(enemyTypes.FALLEN);
                             break;
                         case enemyTypes.HIVE:
-                            bounty.constraints.excludedLocation.push(...['EDZ'])
+                            bounty.constraints.excludedLocation.push(...['EDZ']);
+                            bounty.constraints.enemyType.push(enemyTypes.HIVE);;
                             break;
                         case enemyTypes.SCORN:
                             bounty.constraints.excludedLocation.push(...['EDZ', 'Moon', 'Nessus', 'IO', 'Titan', 'Mercury',
                         'Mars', 'Moon']);
+                            bounty.constraints.enemyType.push(enemyTypes.SCORN);
                             break;
                         case 'sector':
                             bounty.constraints.excludedLocation.push('Strikes');
                             break;
                         case enemyTypes.VEX:
                             bounty.constraints.excludedLocation.push(...['EDZ', 'Moon']);
+                            bounty.constraints.enemyType.push(enemyTypes.VEX);
                     }
                 }
             }
