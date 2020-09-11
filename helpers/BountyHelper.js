@@ -2,7 +2,8 @@ const axios = require('axios');
 const vendorDefinitionManifest = require('../manifests/DestinyVendorDefinition.json');
 const inventoryItemDefinitionManifest = require('../manifests/DestinyInventoryItemDefinition.json');
 const objectiveDefinitionManifest = require('../manifests/DestinyObjectiveDefinition.json');
-const towerVendors = {
+const Bounty = require('../models/Bounty');
+const bountyVendors = {
     ZAVALA: 'Commander Zavala', 
     DRIFTER: 'The Drifter',
     BANSHEE: 'Banshee-44',
@@ -28,14 +29,14 @@ const enemyTypes = {
 }
 
 const excludedLocationTerms = [enemyTypes.CABAL, enemyTypes.FALLEN, enemyTypes.HIVE, enemyTypes.VEX, enemyTypes.SCORN, enemyTypes.TAKEN, 'chests', 'sector'];
-const vendorsArray = [towerVendors.ZAVALA, towerVendors.DRIFTER, towerVendors.BANSHEE, towerVendors.SHAXX, towerVendors.RECASTER,
-towerVendors.ERIS, towerVendors.ASHER, towerVendors.VANCE, towerVendors.ANA, towerVendors.FAILSAFE, towerVendors.SLOANE, towerVendors.DEVRIM, towerVendors.SPIDER, towerVendors.ADA]
+const vendorsArray = [bountyVendors.ZAVALA, bountyVendors.DRIFTER, bountyVendors.BANSHEE, bountyVendors.SHAXX, bountyVendors.RECASTER,
+bountyVendors.ERIS, bountyVendors.ASHER, bountyVendors.VANCE, bountyVendors.ANA, bountyVendors.FAILSAFE, bountyVendors.SLOANE, bountyVendors.DEVRIM, bountyVendors.SPIDER]
 const weaponTypes = ['Auto', 'Pulse', 'Sidearm', 'Scout', 'Hand Cannon', 'Fusion', 'Bow', 'Sniper', 'Shotgun', 'Super',
     'Grenade', 'GrenadeLauncher', 'Finisher', 'Melee', 'Abilities', 'Rocket', 'Submachine', 'Machine'];
 const locations = ['Crucible', 'Gambit Prime', 'Strikes', 'EDZ', 'Moon', 'IO', 'Mercury', 'Mars', 'Nessus', 'Titan', 'Tangled Shore'];
 const elementTypes = ['Void', 'Solar', 'Arc'];
 const ammoTypes = ['Primary', 'Special', 'Heavy']
-const Bounty = require('../models/Bounty');
+const destinationVendors = [bountyVendors.ERIS, bountyVendors.ASHER, bountyVendors.VANCE, bountyVendors.ANA, bountyVendors.FAILSAFE, bountyVendors.SLOANE, bountyVendors.DEVRIM, bountyVendors.SPIDER];
 
 class BountyHelper {
     constructor(ctx) {
@@ -152,7 +153,11 @@ class BountyHelper {
         catch (err) {
             if (err.response.status == 401) {
                 console.log('Token expired, refreshing token')
-                await this._ctx.tokenHelper.refreshToken();
+                let newToken = await this._ctx.tokenHelper.refreshToken();
+                bountyRequest.headers = {
+                    'X-API-Key': process.env.apiKey, 
+                    'Authorization': 'Bearer ' + newToken
+                }
                 response = await axios(bountyRequest);
             }
             else {
@@ -220,10 +225,10 @@ class BountyHelper {
         return Array.from(this._bounties.values())
     }
 
-    async optimize(vendors, minScore = 0) {
+    async optimize(vendors, minScore = 0, filters) {
 
-        let globalBountyArray = [];
-        let globalGroups = [];
+        let groups = [];
+        let excludeStrikes = false;
 
         /*
             1. For each location, get bounties worth doing based on minscore
@@ -231,7 +236,23 @@ class BountyHelper {
             3. Given these constraints, pick the highest scoring bounties that match constraints for this location
         */
 
-        let vendorsToProcess = vendors.filter(v => vendorsArray.includes(v.name))
+        let vendorsToProcess = vendors.filter(v => vendorsArray.includes(v.name));
+        // Apply filters if needed
+        if (filters && filters.length > 0) {
+            if (filters.includes('Gambit')) {
+                vendorsToProcess = vendorsToProcess.filter(v => v.name !== bountyVendors.DRIFTER);
+            }
+            if (filters.includes('Crucible')) {
+                vendorsToProcess = vendorsToProcess.filter(v => v.name !== bountyVendors.SHAXX);
+            }
+            if (filters.includes('Strikes')) {
+                excludeStrikes = true;
+            }
+            if (filters.includes('Destinations')) {
+                vendorsToProcess = vendorsToProcess.filter(v => !destinationVendors.includes(v.name));
+            }
+        }
+
         let saleItems = [];
         for (let v of vendorsToProcess) {
             for (let item of v.saleItems) {
@@ -242,7 +263,7 @@ class BountyHelper {
         let dailyBounties = saleItems.filter(bounty => bounty.bountyType.includes('Daily'));
         dailyBounties = this.analyzeConstraints(dailyBounties);
         this.scoreBounties(dailyBounties);
-        console.log(dailyBounties.filter(b => b.vendorName === towerVendors.BANSHEE))
+        console.log(dailyBounties.filter(b => b.vendorName === bountyVendors.BANSHEE));
         dailyBounties = dailyBounties.filter(b => b.score >= minScore)
         if (dailyBounties.length > 0) {
             let sortedBounties = this.sortByScore(dailyBounties);
@@ -251,18 +272,24 @@ class BountyHelper {
                 let bountiesForLocation = sortedBounties.filter(b => b.constraints.location.includes(location));
                 if (bountiesForLocation.length > 0) {
                     sortedBounties = sortedBounties.filter(b => !bountiesForLocation.includes(b));
-                    globalGroups.push({
-                        location,
-                        bounties: bountiesForLocation,
-                        noBountyFound: 1
-                    })
+                    if (location === 'Strikes' && excludeStrikes) {
+                        continue;
+                    }
+                    else {
+                        groups.push({
+                            location,
+                            bounties: bountiesForLocation,
+                            noBountyFound: 1,
+                            constraints: []
+                        });
+                    }
                 }
             }
-            if (globalGroups.length > 0) {
-                this.buildBountyGraph(sortedBounties, globalGroups[0], 0, globalBountyArray, globalGroups);
+            if (groups.length > 0) {
+                this.groupBounties(sortedBounties, groups[0], 0, groups);
             }
             else {
-                globalGroups.push({
+                groups.push({
                     location: 'Any location',
                     bounties: sortedBounties
                 })
@@ -271,10 +298,17 @@ class BountyHelper {
         else {
             console.log('No bounties found that match the given score constraint');
         }
-        return globalGroups;
+        return groups;
     }
 
-    buildBountyGraph(bounties, currentGroup, i, globalBountyArray, globalGroups) {
+    /**
+     * Find the optimal boutnies to group for each location
+     * @param {Object[]} bounties The array of daily bounties
+     * @param {Object} currentGroup The group or location to analyze
+     * @param {Number} i The current index
+     * @param {Object[]} groups The array of bounty groups
+     */
+    groupBounties(bounties, currentGroup, i, groups) {
         if (bounties.length > 0) {
             console.log('Building bounty group for location:', currentGroup.location);           
             
@@ -289,12 +323,17 @@ class BountyHelper {
                 if (bounty.constraints.element.length > 0) {
                     groupConstraints.push(...bounty.constraints.element);
                 }
+                if (bounty.constraints.enemyType.length > 0) {
+                    groupConstraints.push(...bounty.constraints.enemyType);
+                }
             }
+
+            currentGroup.constraints.push(groupConstraints);
 
             // Now find the single bounty with the highest score & most matching constraints
             let mostCompatibleBounty = {
                 numMatched: 0,
-                score: 0,
+                score: 0
             }
 
             for (let bounty of bounties) {
@@ -321,6 +360,13 @@ class BountyHelper {
                             }
                         }
                     }
+                    if (bounty.constraints.enemyType.length > 0) {
+                        for (let enemyType of bounty.constraints.enemyType) {
+                            if (groupConstraints.includes(enemyType)) {
+                                numMatched++;
+                            }
+                        }
+                    }
                     
                     if (numMatched > mostCompatibleBounty.numMatched) {
                         mostCompatibleBounty = {
@@ -338,7 +384,7 @@ class BountyHelper {
             }
             else {
                 if (currentGroup.noBountyFound && currentGroup.noBountyFound <= 0 || bounties.length === 1) {
-                    for (let group of globalGroups) {
+                    for (let group of groups) {
                         group.noBountyFound++;
                     }
                     let bounty = bounties.filter(b => !b.constraints.excludedLocation.includes(currentGroup.location));
@@ -353,14 +399,11 @@ class BountyHelper {
             }
             i++
 
-            if (i >= globalGroups.length) {
+            if (i >= groups.length) {
                 i = 0;
             }
 
-            return this.buildBountyGraph(bounties, globalGroups[i], i, globalBountyArray, globalGroups);
-        }
-        else {
-            return globalBountyArray;
+            return this.groupBounties(bounties, groups[i], i, groups);
         }
     }
 
@@ -469,6 +512,7 @@ class BountyHelper {
                 element: [],
                 location: [],
                 ammoType: [],
+                enemyType: [],
                 excludedLocation: []
             };
             let knownBounty = this._bounties.get(bounty.itemHash.toString())
@@ -498,7 +542,7 @@ class BountyHelper {
 
             // Add location constraints
             switch (bounty.vendorName) {
-                case(towerVendors.ZAVALA):
+                case(bountyVendors.ZAVALA):
                     // Zavala
                     if (bounty.description.toUpperCase().includes('STRIKE') || bounty.description.toUpperCase().includes('NIGHTFALL')) {
                         bounty.constraints.location.push('Strikes');
@@ -508,45 +552,45 @@ class BountyHelper {
                         bounty.constraints.excludedLocation = ['Crucible'];
                     }
                     break;
-                case(towerVendors.DRIFTER):
+                case(bountyVendors.DRIFTER):
                     // Drifter
                     bounty.constraints.location.push('Gambit Prime');
                     locationSpecificBounties.push(bounty);
                     break;
-                case(towerVendors.SHAXX):
+                case(bountyVendors.SHAXX):
                     // Shaxx
                     bounty.constraints.location.push('Crucible');
                     locationSpecificBounties.push(bounty);
                     break;
-                case(towerVendors.ERIS):
+                case(bountyVendors.ERIS):
                     bounty.constraints.location.push('Moon');
                     locationSpecificBounties.push(bounty);
                     break;
-                case(towerVendors.DEVRIM):
+                case(bountyVendors.DEVRIM):
                     bounty.constraints.location.push('EDZ');
                     locationSpecificBounties.push(bounty);
                     break;
-                case(towerVendors.FAILSAFE):
+                case(bountyVendors.FAILSAFE):
                     bounty.constraints.location.push('Nessus');
                     locationSpecificBounties.push(bounty);
                     break;
-                case(towerVendors.SLOANE):
+                case(bountyVendors.SLOANE):
                     bounty.constraints.location.push('Titan');
                     locationSpecificBounties.push(bounty);
                     break;
-                case(towerVendors.VANCE):
+                case(bountyVendors.VANCE):
                     bounty.constraints.location.push('Mercury');
                     locationSpecificBounties.push(bounty);
                     break;
-                case(towerVendors.ANA):
+                case(bountyVendors.ANA):
                     bounty.constraints.location.push('Mars');
                     locationSpecificBounties.push(bounty);
                     break;
-                case(towerVendors.ASHER):
+                case(bountyVendors.ASHER):
                     bounty.constraints.location.push('IO');
                     locationSpecificBounties.push(bounty);
                     break;
-                case(towerVendors.SPIDER):
+                case(bountyVendors.SPIDER):
                     bounty.constraints.location.push('Tangled Shore');
                     locationSpecificBounties.push(bounty);
                     break;
@@ -577,22 +621,27 @@ class BountyHelper {
                     switch(term) {
                         case enemyTypes.CABAL:
                             bounty.constraints.excludedLocation.push(...['Moon']);
+                            bounty.constraints.enemyType.push(enemyTypes.CABAL);
                             break;
                         case enemyTypes.FALLEN:
                             bounty.constraints.excludedLocation.push(...['Mercury', 'Mars', 'IO']);
+                            bounty.constraints.enemyType.push(enemyTypes.FALLEN);
                             break;
                         case enemyTypes.HIVE:
-                            bounty.constraints.excludedLocation.push(...['EDZ'])
+                            bounty.constraints.excludedLocation.push(...['EDZ']);
+                            bounty.constraints.enemyType.push(enemyTypes.HIVE);;
                             break;
                         case enemyTypes.SCORN:
                             bounty.constraints.excludedLocation.push(...['EDZ', 'Moon', 'Nessus', 'IO', 'Titan', 'Mercury',
                         'Mars', 'Moon']);
+                            bounty.constraints.enemyType.push(enemyTypes.SCORN);
                             break;
                         case 'sector':
                             bounty.constraints.excludedLocation.push('Strikes');
                             break;
                         case enemyTypes.VEX:
                             bounty.constraints.excludedLocation.push(...['EDZ', 'Moon']);
+                            bounty.constraints.enemyType.push(enemyTypes.VEX);
                     }
                 }
             }

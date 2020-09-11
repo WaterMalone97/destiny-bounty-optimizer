@@ -76,7 +76,15 @@ class Home extends React.Component {
         localStorage.setItem('date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
         console.log('Next reset:',localStorage.getItem('date'))
         try { 
-          await fetch('api/bounties/optimize?score=50')
+          let opts = {
+            method: 'POST',
+            body: JSON.stringify({
+              score: 50,
+            }),
+            headers: { "Content-Type": "application/json" },
+          };
+          
+          await fetch('api/bounties/optimize', opts)
             .then(res => {
               if (res.status !== 200)
                 throw new Error('Bad Response')
@@ -105,7 +113,15 @@ class Home extends React.Component {
     console.log('Next reset:', localStorage.getItem('date'))
 
     try {
-      await fetch('api/bounties/optimize?score=50')
+      let opts = {
+        method: 'POST',
+        body: JSON.stringify({
+          score: 50,
+        }),
+        headers: { "Content-Type": "application/json" },
+      };
+
+      await fetch('api/bounties/optimize', opts)
         .then(res => {
           if (res.status !== 200)
             throw new Error('Bad Response')
@@ -152,9 +168,14 @@ class Home extends React.Component {
     sessionStorage.setItem('time', this.state.time)
     sessionStorage.setItem('filters', JSON.stringify(this.state.filters))
     try {
-      await fetch('api/bounties/optimize?' + new URLSearchParams({
-        score: Math.round(this.state.time * 100) 
-      }))
+      await fetch('api/bounties/optimize', {
+        method: 'POST',
+        body: JSON.stringify({
+          score: Math.round(this.state.time * 100),
+          filters: this.state.filters.filter(f => f.toggle === true)
+        }),
+        headers: { "Content-Type": "application/json" },
+      })
         .then(res => {
           if (res.status !== 200)
             throw new Error('Bad Response')
