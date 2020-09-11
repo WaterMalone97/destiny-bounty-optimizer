@@ -37,11 +37,11 @@ class TokenHelper {
       }
       await Token.findOneAndUpdate({token: entry.token}, {...newToken})
       console.log('Updated token in db')
-      return res.data.access_token
     }
     catch(err) {
       console.log('ERROR REFRESHING TOKEN:', err.response)
     }
+    return res.data.access_token
   }
 
   async grabToken() {

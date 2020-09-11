@@ -11,7 +11,9 @@ require('dotenv').config();
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
+app.use(bodyParser.urlencoded({
+  extended: true
+})); // support encoded bodies
 
 const db = process.env.mongoURI
 
