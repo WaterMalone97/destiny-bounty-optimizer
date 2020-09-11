@@ -34,7 +34,7 @@ router.post('/rank', async (req, res) => {
 router.post('/optimize', async (req, res) => {
     this._ctx = req.ctx;
     let minScore = parseInt(req.body.score);
-    let filters = req.body.filters.map(f => f.name);
+    let filters = req.body.filters;
     try {
         let vendorSales = await this._ctx.bountyHelper.getBounties();
         let bountyArray = await this._ctx.bountyHelper.optimize(JSON.parse(JSON.stringify(vendorSales)), minScore, filters);

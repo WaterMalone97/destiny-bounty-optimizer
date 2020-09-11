@@ -239,6 +239,7 @@ class BountyHelper {
         let vendorsToProcess = vendors.filter(v => vendorsArray.includes(v.name));
         // Apply filters if needed
         if (filters && filters.length > 0) {
+            filters = filters.map(f => f.name);
             if (filters.includes('Gambit')) {
                 vendorsToProcess = vendorsToProcess.filter(v => v.name !== bountyVendors.DRIFTER);
             }
