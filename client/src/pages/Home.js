@@ -38,7 +38,7 @@ class Home extends React.Component {
     showRewards: true,
     showLocations: false,
     toggleFilters: false,
-    time: 0.6,
+    time: 0.5,
     bungoAPI: true
   }
 
@@ -74,9 +74,9 @@ class Home extends React.Component {
         console.log('Grabbing new bounties')
         //Overwrite saved date with date for next daily reset
         localStorage.setItem('date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
-        console.log(localStorage.getItem('date'))
+        console.log('Next reset:',localStorage.getItem('date'))
         try { 
-          await fetch('api/bounties/optimize?score=60')
+          await fetch('api/bounties/optimize?score=50')
             .then(res => {
               if (res.status !== 200)
                 throw new Error('Bad Response')
@@ -105,7 +105,7 @@ class Home extends React.Component {
     console.log('Next reset:', localStorage.getItem('date'))
 
     try {
-      await fetch('api/bounties/optimize?score=60')
+      await fetch('api/bounties/optimize?score=50')
         .then(res => {
           if (res.status !== 200)
             throw new Error('Bad Response')
@@ -229,6 +229,9 @@ class Home extends React.Component {
       </div>
     )
     
+    let date = new Date(localStorage.getItem('vendors-date'))
+    date.setDate(date.getDate() - 1)          
+
     return (
       <div>
         {this.props.load.loadPage ?
@@ -268,7 +271,7 @@ class Home extends React.Component {
                 </div>
               </div>
 
-              <h2>Bounties</h2>
+              <h2>Optimized Bounties - {date.toLocaleDateString()}</h2>
               <div className='bounty-container'>
                 {this.state.showBounties ? 
                   <div>

@@ -32,7 +32,7 @@ class Bounties extends React.Component {
         console.log('Daily reset')
         console.log('Grabbing vendors')
         //Overwrite saved date with date for next daily reset
-        localStorage.setItem('vendor-date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
+        localStorage.setItem('vendors-date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
         console.log('Next reset:', localStorage.getItem('vendors-date'))
         try { 
           await fetch('/api/bounties')
@@ -73,8 +73,8 @@ class Bounties extends React.Component {
     //If no data is cached, grab bounties
     console.log('No cached bounties')
     //Save date for next daily reset
-    localStorage.setItem('vendor-date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
-    console.log(localStorage.getItem('vendors-date'))
+    localStorage.setItem('vendors-date', tomorrow.toISOString().substr(0,11) + '17:00:00.000Z')
+    console.log('Next reset:',localStorage.getItem('vendors-date'))
 
     try {
       console.log('Grabbing bounties')
@@ -130,8 +130,6 @@ class Bounties extends React.Component {
   }
 
   render() {
-    //console.log(this.state.vendors)
-    //console.log(this.props.load)
 
     let display = this.state.vendors.map(elem =>
       <div key={elem.id}>
@@ -139,7 +137,7 @@ class Bounties extends React.Component {
           <div className='vendorContainer'>
             <div className='vendorInfo'> 
               <h2>{elem.name}</h2>
-              <button onClick={this.collapse.bind(this, elem.id)}>Hide</button>          
+              <div className='collapse-btn' onClick={this.collapse.bind(this, elem.id)}>&#9650;</div>          
               <img src={elem.icon} alt={elem.name} />
             </div>
             <div className='salesContainer'>
@@ -248,7 +246,7 @@ class Bounties extends React.Component {
           <div className='vendorContainer'>
             <div className='vendorInfo'> 
               <h2>{elem.name}</h2>
-              <button onClick={this.collapse.bind(this, elem.id)}>Show</button>
+              <div className='collapse-btn' onClick={this.collapse.bind(this, elem.id)}>&#9660;</div> 
             </div> 
           </div>
         }
@@ -256,7 +254,7 @@ class Bounties extends React.Component {
     )
 
     let date = new Date(localStorage.getItem('vendors-date'))
-    //date.setDate(date.toLocaleDateString - 1)    
+    date.setDate(date.getDate() - 1)
 
     return (
       <div>
@@ -275,8 +273,11 @@ class Bounties extends React.Component {
             </div>
           }
           <div className="main-content">
-            <h1>Today's Bounties {date.toLocaleDateString}</h1>
-            <button onClick={this.onClick}>{this.state.showAll ? 'Show less info' : 'Show all info'}</button>
+            <h1>Vendor Bounties</h1>
+            <div className='subHeader'>
+              <h4>{date.toLocaleDateString()}</h4>
+              <button className='showAll-btn' onClick={this.onClick}>{this.state.showAll ? 'Hide Info' : 'Show Info'}</button>
+            </div>  
             {display}
           </div>
         </div> : <Loading /> }

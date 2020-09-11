@@ -164,12 +164,40 @@
 }
 
 .bountiesContainer h1 {
-    padding-bottom: 20px;
+    padding-bottom: 40px;
 }
 
 .bountiesContainer button {
     float: right;
     margin-top: -30px;
+}
+
+.subHeader {
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+.showAll-btn {
+    padding: 0.35em 1.2em;
+    border: 0.1em solid white;
+    border-radius: 0.12em;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    transition: all 0.2s;
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 35px;
+    width: 120px;
+}
+
+.showAll-btn:hover {
+    color: black;
+    background-color: white;
+    cursor: pointer;
+}
+
+.subHeader h4 {
+    margin: -25px 0px -10px 10px;
 }
 
 @media (max-width: 800px) {

@@ -11,6 +11,7 @@
     padding: 12px 20px 0px 20px;
     color: white;
     text-decoration: none;
+    transition: all 0.2s;
 }
 
 .navbar a:hover {

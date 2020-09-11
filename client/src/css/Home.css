@@ -114,7 +114,6 @@
     box-sizing: border-box;
     text-decoration: none;
     font-size: 18px;
-    font-weight: bold;
     font-weight: 300;
     color: white;
     text-align: center;
@@ -166,9 +165,11 @@
 
 .collapse-btn {
     float: right;
-    margin-top: -55px
+    margin-top: -55px;
+    transition: all 0.2s;
 }
 
 .collapse-btn:hover {
     cursor: pointer;
+    color: goldenrod;
 }
