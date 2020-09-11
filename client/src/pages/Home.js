@@ -44,6 +44,21 @@ class Home extends React.Component {
 
   async componentDidMount() {
     this.props.isLoading()
+
+    //Check if in current session
+    if (sessionStorage.getItem('bounties')) {
+      console.log('Loading current session')
+      let bounties = JSON.parse(sessionStorage.getItem('bounties'))
+      let filters = JSON.parse(sessionStorage.getItem('filters'))
+      console.log(bounties)        
+      this.setState({ 
+        filters,
+        time: sessionStorage.getItem('time'),
+        bounties
+      })
+      return this.props.doneLoading()
+    }
+
     let date = new Date()
     let tomorrow = new Date(date)
     tomorrow.setDate(tomorrow.getDate() + 1)
@@ -77,9 +92,9 @@ class Home extends React.Component {
         }
         return this.props.doneLoading()
       }
-      let data = JSON.parse(localStorage.getItem('bounties'))
-      console.log(data)        
-      this.setState({ bounties: data })
+      let bounties = JSON.parse(localStorage.getItem('bounties'))
+      console.log(bounties)        
+      this.setState({ bounties })
       return this.props.doneLoading()
     }
     
@@ -98,6 +113,7 @@ class Home extends React.Component {
         })
         .then(json => {
           this.setState({ bounties: json })
+          console.log('Caching bounties')
           localStorage.setItem('bounties', JSON.stringify(json))
         })
     }
@@ -105,7 +121,6 @@ class Home extends React.Component {
       this.setState({ bungoAPI: false })
     }
 
-    console.log('Caching bounties')
     this.props.doneLoading()
     console.log(this.state.bounties)
   }
@@ -122,13 +137,8 @@ class Home extends React.Component {
     }))
   }
 
-  showLocations = () => {
-    this.setState({ showLocations: !this.state.showLocations })
-  }
-
   toggle = (event) => {
     this.setState({ [event]: !this.state[event] })
-
   }
 
   onChange = (event) => {
@@ -137,26 +147,32 @@ class Home extends React.Component {
 
   sumbit = async() => {
     console.log('Filtering bounties')
-    this.setState({ toggle: !this.state.toggle })
     this.props.isLoading()
+    this.setState({ toggleFilters: false })
+    sessionStorage.setItem('time', this.state.time)
+    sessionStorage.setItem('filters', JSON.stringify(this.state.filters))
     try {
       await fetch('api/bounties/optimize?' + new URLSearchParams({
         score: Math.round(this.state.time * 100) 
       }))
-        .then(res => res.json())
+        .then(res => {
+          if (res.status !== 200)
+            throw new Error('Bad Response')
+          return res.json()
+        })
         .then(json => {
           this.setState({ bounties: json })
+          sessionStorage.setItem('bounties', JSON.stringify(json))
       })
     }
     catch {
-      alert('Bungie API is down fam')
+      this.setState({ bungoAPI: false })
     }
     
     this.props.doneLoading()
   }
 
   render() {
-
     let filters = this.state.filters.map((elem, index) =>
       <div className='filter-option' key={elem.name}>                   
           {elem.toggle ? 
@@ -256,9 +272,9 @@ class Home extends React.Component {
               <div className='bounty-container'>
                 {this.state.showBounties ? 
                   <div>
-                    <button className='collapse-btn' onClick={this.toggle.bind(this, 'showBounties')}>&#9650;</button>  
+                    <div className='collapse-btn' onClick={this.toggle.bind(this, 'showBounties')}>&#9650;</div>
                     {display}
-                  </div> : <button className='collapse-btn' onClick={this.toggle.bind(this, 'showBounties')}>&#9660;</button>  
+                  </div> : <div className='collapse-btn' onClick={this.toggle.bind(this, 'showBounties')}>&#9660;</div>  
                 }                                               
               </div>
 
@@ -266,18 +282,17 @@ class Home extends React.Component {
               <div className='instructions-container'>
               {this.state.showInstructions ?
                 <div>
-                  <button className='collapse-btn' onClick={this.toggle.bind(this, 'showInstructions')}>&#9650;</button>  
+                  <div className='collapse-btn' onClick={this.toggle.bind(this, 'showInstructions')}>&#9650;</div>
                   <h4>Bounty Locations</h4>
                   {this.state.showLocations ? 
                     <div>
-                      <button onClick={this.showLocations}>Hide Locations</button>            
+                      <button onClick={this.toggle.bind(this, 'showLocations')}>Hide Locations</button>            
                       <div className='locations'>
                         Locations
                       </div>
-                    </div> : <button onClick={this.showLocations}>Show Locations</button> 
+                    </div> : <button onClick={this.toggle.bind(this, 'showLocations')}>Show Locations</button> 
                   }
-                </div> : <button className='collapse-btn' onClick={this.toggle.bind(this, 'showInstructions')}>&#9660;</button>  
-
+                </div> : <div className='collapse-btn' onClick={this.toggle.bind(this, 'showInstructions')}>&#9660;</div>
               }
               </div>
 
@@ -285,9 +300,9 @@ class Home extends React.Component {
               <div className='rewards-container'>
                 {this.state.showRewards ? 
                   <div>
-                    <button className='collapse-btn' onClick={this.toggle.bind(this, 'showRewards')}>&#9650;</button> 
+                    <div className='collapse-btn' onClick={this.toggle.bind(this, 'showRewards')}>&#9650;</div>
                     Place rewards here
-                  </div> : <button className='collapse-btn' onClick={this.toggle.bind(this, 'showRewards')}>&#9660;</button> 
+                  </div> : <div className='collapse-btn' onClick={this.toggle.bind(this, 'showRewards')}>&#9660;</div> 
                 }                    
               </div>
             </div>

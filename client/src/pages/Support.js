@@ -43,8 +43,7 @@ class Support extends React.Component {
         localStorage.removeItem('vendors-date')
     }
 
-    render() {
-
+    render() {    
         return (
             <div className='support-page'>
                 <Navbar /> 
