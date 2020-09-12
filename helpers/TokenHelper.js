@@ -14,7 +14,7 @@ class TokenHelper {
     let entry = await Token.findOne()
     if (!entry)
       return console.log('token does not exist')
-  
+
     const tokenRefresh = {
       url: 'https://www.bungie.net/platform/app/oauth/token/',
       method: 'POST',
@@ -26,9 +26,10 @@ class TokenHelper {
         refresh_token: entry.refresh_token
       })
     }
-  
+
+    let res;
     try {
-      let res = await axios(tokenRefresh)
+      res = await axios(tokenRefresh)
       const newToken = {
         token: res.data.access_token,
         token_expire: res.data.expires_in,
