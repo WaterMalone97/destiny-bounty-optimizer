@@ -15,24 +15,29 @@ class Home extends React.Component {
       {
         name: 'Crucible',
         desc: 'Exclude Crucible bounties',
-        toggle: false
+        toggle: false,
+        css: 'selected'
       },
       {
         name: 'Gambit',
         desc: 'Exclude Gambit bounties',
-        toggle: false
+        toggle: false,
+        css: 'selected'
       },
       {
         name: 'Strikes',
         desc: 'Exclude Strike bounties',
-        toggle: false
+        toggle: false,
+        css: 'selected'
       },
       {
         name: 'Destinations',
         desc: 'Exclude destination bounties',
-        toggle: false
+        toggle: false,
+        css: 'selected'
       }   
     ],
+    activeFilters: [],
     showBounties: true,
     showInstructions: true,
     showRewards: true,
@@ -50,9 +55,11 @@ class Home extends React.Component {
       console.log('Loading current session')
       let bounties = JSON.parse(sessionStorage.getItem('bounties'))
       let filters = JSON.parse(sessionStorage.getItem('filters'))
+      let activeFilters = JSON.parse(sessionStorage.getItem('activeFilters'))
       console.log(bounties)        
       this.setState({ 
         filters,
+        activeFilters,
         time: sessionStorage.getItem('time'),
         bounties
       })
@@ -143,7 +150,14 @@ class Home extends React.Component {
 
   handleClick = (event) => {
     console.log(event)
-    let body = JSON.stringify({ type: event.name })
+    if (this.state.activeFilters.map(elem => elem.name).includes(event.elem.name)) {
+      let arr = this.state.activeFilters.filter(elem => elem.name !== event.elem.name)
+      this.setState({ activeFilters: arr })
+    }
+    else {
+      this.setState({ activeFilters: [event.elem, ...this.state.activeFilters] })
+    }
+
     this.setState(prevState => ({ 
       filters: prevState.filters.map((elem, index) => {
         if (index === event.index)
@@ -164,9 +178,21 @@ class Home extends React.Component {
   sumbit = async() => {
     console.log('Filtering bounties')
     this.props.isLoading()
-    this.setState({ toggleFilters: false })
+    let filters = this.state.filters
+    let activeFilters = this.state.activeFilters
+    for (let i = 0; i < filters.length; i++)
+      if (filters[i].toggle)
+        filters[i].css = 'selected toggled'
+      else
+        filters[i].css = 'selected'
+
+    for (let i = 0; i < activeFilters.length; i++)
+      activeFilters[i].css = 'selected toggled'
+
+    this.setState({ toggleFilters: false, activeFilters, filters })
     sessionStorage.setItem('time', this.state.time)
-    sessionStorage.setItem('filters', JSON.stringify(this.state.filters))
+    sessionStorage.setItem('filters', JSON.stringify(filters))
+    sessionStorage.setItem('activeFilters', JSON.stringify(activeFilters))
     try {
       await fetch('api/bounties/optimize', {
         method: 'POST',
@@ -206,13 +232,9 @@ class Home extends React.Component {
       </div>
     )
 
-    let toggledFilters = this.state.filters.map(elem => 
-      <div key={elem.name}>
-        {elem.toggle ? 
-          <div className='toggled'>
-            <h5>{elem.desc}</h5>
-          </div> : null
-        }
+    let toggledFilters = this.state.activeFilters.map(elem => 
+      <div key={elem.name} className={elem.css}>
+        <h5>{elem.desc}</h5>
       </div>
     )
 
@@ -250,7 +272,7 @@ class Home extends React.Component {
       </div>
     )
     
-    let date = new Date(localStorage.getItem('vendors-date'))
+    let date = new Date(localStorage.getItem('date'))
     date.setDate(date.getDate() - 1)          
 
     return (

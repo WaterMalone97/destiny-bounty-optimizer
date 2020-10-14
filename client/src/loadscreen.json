@@ -115,16 +115,6 @@
                 "done": false
             },
             {
-                "name": "Public Events on Mars",
-                "progressBar": {
-                    "width": 0,
-                    "backgroundColor": "rgba(205, 15, 0, 0.8)",
-                    "height": "30px"
-                },
-                "interval": 1,
-                "done": false
-            },
-            {
                 "name": "Defeat Valus Ta'aurc",
                 "progressBar": {
                     "width": 0,
@@ -133,9 +123,19 @@
                 },
                 "interval": 6,
                 "done": false
-            }       
+            },     
+            {
+                "name": "Public Events on Mars",
+                "progressBar": {
+                    "width": 0,
+                    "backgroundColor": "rgba(205, 15, 0, 0.8)",
+                    "height": "30px"
+                },
+                "interval": 1,
+                "done": false
+            }  
         ],
         "footer": "\"Whether we wanted it or not, we've stepped into a war with the Cabal on Mars.\"",
-        "author": "Comander Zavala"
+        "author": "Commander Zavala"
     }
 ]

@@ -8,6 +8,14 @@ import Rank from './pages/Rank';
 import Support from './pages/Support';
 import Unavailable from './pages/Unavailable'
 import querystring from 'querystring'
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('UA-177880022-1');
+
+//history.listen((location) => {
+  ReactGA.set({ page: window.location.pathname });
+  ReactGA.pageview(window.location.pathname + window.location.search);
+//});
 
 class App extends React.Component {
 
