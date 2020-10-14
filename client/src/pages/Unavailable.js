@@ -9,6 +9,7 @@ const Unavailable = () => {
             <div className="main"></div>
             <div className="main-title"></div>
             <div className="main-content">
+                <button><a href='/'>Return to home page</a></button>
                 <h4>
                     The Bungie API is currently down or is being slow due to a high volume of players. 
                     Please try agian at a later time.
